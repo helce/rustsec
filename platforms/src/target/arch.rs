@@ -28,6 +28,9 @@ pub enum Arch {
     /// `csky`
     Csky,
 
+    /// `e2k`
+    E2k,
+
     /// `hexagon`
     Hexagon,
 
@@ -102,6 +105,7 @@ impl Arch {
             Arch::Avr => "avr",
             Arch::Bpf => "bpf",
             Arch::Csky => "csky",
+            Arch::E2k => "e2k",
             Arch::Hexagon => "hexagon",
             Arch::Loongarch64 => "loongarch64",
             Arch::M68k => "m68k",
@@ -139,6 +143,7 @@ impl FromStr for Arch {
             "avr" => Arch::Avr,
             "bpf" => Arch::Bpf,
             "csky" => Arch::Csky,
+            "e2k" => Arch::E2k,
             "hexagon" => Arch::Hexagon,
             "loongarch64" => Arch::Loongarch64,
             "m68k" => Arch::M68k,

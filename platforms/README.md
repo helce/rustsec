@@ -109,6 +109,21 @@ If we remove platforms, we will bump the minor version of this crate.
 | [armv7a-none-eabi]                     | arm         | none       |            |
 | [armv7r-none-eabi]                     | arm         | none       |            |
 | [armv7r-none-eabihf]                   | arm         | none       |            |
+| [e2k-unknown-linux-gnu]                | e2k         | linux      | gnu        |
+| [e2k12c-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2k16c-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2k1cplus-unknown-linux-gnu]          | e2k         | linux      | gnu        |
+| [e2k2c3-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2k48c-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2k4c-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2k8c-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2k8c2-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2k8v7-unknown-linux-gnu]             | e2k         | linux      | gnu        |
+| [e2kv3-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2kv4-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2kv5-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2kv6-unknown-linux-gnu]              | e2k         | linux      | gnu        |
+| [e2kv7-unknown-linux-gnu]              | e2k         | linux      | gnu        |
 | [i586-pc-windows-msvc]                 | x86         | windows    | msvc       |
 | [i586-unknown-linux-gnu]               | x86         | linux      | gnu        |
 | [i586-unknown-linux-musl]              | x86         | linux      | musl       |
@@ -435,6 +450,21 @@ If we remove platforms, we will bump the minor version of this crate.
 [bpfel-unknown-none]: https://docs.rs/platforms/latest/platforms/platform/constant.BPFEL_UNKNOWN_NONE.html
 [csky-unknown-linux-gnuabiv2]: https://docs.rs/platforms/latest/platforms/platform/constant.CSKY_UNKNOWN_LINUX_GNUABIV2.html
 [csky-unknown-linux-gnuabiv2hf]: https://docs.rs/platforms/latest/platforms/platform/constant.CSKY_UNKNOWN_LINUX_GNUABIV2HF.html
+[e2k-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K_UNKNOWN_LINUX_GNU.html
+[e2k12c-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K12C_UNKNOWN_LINUX_GNU.html
+[e2k16c-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K16C_UNKNOWN_LINUX_GNU.html
+[e2k1cplus-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K1CPLUS_UNKNOWN_LINUX_GNU.html
+[e2k2c3-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K2C3_UNKNOWN_LINUX_GNU.html
+[e2k48c-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K48C_UNKNOWN_LINUX_GNU.html
+[e2k4c-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K4C_UNKNOWN_LINUX_GNU.html
+[e2k8c-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K8C_UNKNOWN_LINUX_GNU.html
+[e2k8c2-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K8C2_UNKNOWN_LINUX_GNU.html
+[e2k8v7-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2K8V7_UNKNOWN_LINUX_GNU.html
+[e2kv3-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2KV3_UNKNOWN_LINUX_GNU.html
+[e2kv4-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2KV4_UNKNOWN_LINUX_GNU.html
+[e2kv5-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2KV5_UNKNOWN_LINUX_GNU.html
+[e2kv6-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2KV6_UNKNOWN_LINUX_GNU.html
+[e2kv7-unknown-linux-gnu]: https://docs.rs/platforms/latest/platforms/platform/constant.E2KV7_UNKNOWN_LINUX_GNU.html
 [hexagon-unknown-linux-musl]: https://docs.rs/platforms/latest/platforms/platform/constant.HEXAGON_UNKNOWN_LINUX_MUSL.html
 [hexagon-unknown-none-elf]: https://docs.rs/platforms/latest/platforms/platform/constant.HEXAGON_UNKNOWN_NONE_ELF.html
 [i386-apple-ios]: https://docs.rs/platforms/latest/platforms/platform/constant.I386_APPLE_IOS.html

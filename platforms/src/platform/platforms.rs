@@ -103,6 +103,21 @@ pub(crate) const ALL: &[Platform] = &[
     BPFEL_UNKNOWN_NONE,
     CSKY_UNKNOWN_LINUX_GNUABIV2,
     CSKY_UNKNOWN_LINUX_GNUABIV2HF,
+    E2K_UNKNOWN_LINUX_GNU,
+    E2K12C_UNKNOWN_LINUX_GNU,
+    E2K16C_UNKNOWN_LINUX_GNU,
+    E2K1CPLUS_UNKNOWN_LINUX_GNU,
+    E2K2C3_UNKNOWN_LINUX_GNU,
+    E2K48C_UNKNOWN_LINUX_GNU,
+    E2K4C_UNKNOWN_LINUX_GNU,
+    E2K8C_UNKNOWN_LINUX_GNU,
+    E2K8C2_UNKNOWN_LINUX_GNU,
+    E2K8V7_UNKNOWN_LINUX_GNU,
+    E2KV3_UNKNOWN_LINUX_GNU,
+    E2KV4_UNKNOWN_LINUX_GNU,
+    E2KV5_UNKNOWN_LINUX_GNU,
+    E2KV6_UNKNOWN_LINUX_GNU,
+    E2KV7_UNKNOWN_LINUX_GNU,
     HEXAGON_UNKNOWN_LINUX_MUSL,
     HEXAGON_UNKNOWN_NONE_ELF,
     I386_APPLE_IOS,
@@ -1249,6 +1264,171 @@ pub(crate) const CSKY_UNKNOWN_LINUX_GNUABIV2HF: Platform = Platform {
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
     tier: Tier::Three,
+};
+
+/// E2K generic Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-12c Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K12C_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k12c-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-16c Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K16C_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k16c-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-1cplus Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K1CPLUS_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k1cplus-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-2c3 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K2C3_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k2c3-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-48c Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K48C_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k48c-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-4c Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K4C_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k4c-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-8c Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K8C_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k8c-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-8c2 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K8C2_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k8c2-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-8v7 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2K8V7_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2k8v7-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-v3 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2KV3_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2kv3-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-v4 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2KV4_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2kv4-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-v5 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2KV5_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2kv5-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-v6 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2KV6_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2kv6-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
+};
+
+/// E2K elbrus-v7 Linux (kernel 5.10, glibc 2.35)
+pub(crate) const E2KV7_UNKNOWN_LINUX_GNU: Platform = Platform {
+    target_triple: "e2kv7-unknown-linux-gnu",
+    target_arch: Arch::E2k,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
 };
 
 /// Hexagon Linux with musl 1.2.3
