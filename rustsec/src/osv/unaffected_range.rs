@@ -89,14 +89,14 @@ impl Display for UnaffectedRange {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.start {
             Bound::Unbounded => f.write_str("[0"),
-            Bound::Exclusive(v) => f.write_fmt(format_args!("({}", v)),
-            Bound::Inclusive(v) => f.write_fmt(format_args!("[{}", v)),
+            Bound::Exclusive(v) => f.write_fmt(format_args!("({v}")),
+            Bound::Inclusive(v) => f.write_fmt(format_args!("[{v}")),
         }?;
         f.write_str(", ")?;
         match &self.end {
             Bound::Unbounded => f.write_str("∞)"),
-            Bound::Exclusive(v) => f.write_fmt(format_args!("{})", v)),
-            Bound::Inclusive(v) => f.write_fmt(format_args!("{}]", v)),
+            Bound::Exclusive(v) => f.write_fmt(format_args!("{v})")),
+            Bound::Inclusive(v) => f.write_fmt(format_args!("{v}]")),
         }
     }
 }
@@ -168,14 +168,20 @@ impl TryFrom<&semver::VersionReq> for UnaffectedRange {
                 }
                 Op::Exact => {
                     if input.comparators.len() != 1 {
-                        fail!(BadParam, "Selectors that define an exact version (e.g. '=1.0') must be alone in their range");
+                        fail!(
+                            BadParam,
+                            "Selectors that define an exact version (e.g. '=1.0') must be alone in their range"
+                        );
                     }
                     start = Bound::Inclusive(comp_to_ver(comparator));
                     end = Bound::Inclusive(comp_to_ver(comparator));
                 }
                 Op::Caret => {
                     if input.comparators.len() != 1 {
-                        fail!(BadParam, "Selectors that define both the upper and lower bound (e.g. '^1.0') must be alone in their range");
+                        fail!(
+                            BadParam,
+                            "Selectors that define both the upper and lower bound (e.g. '^1.0') must be alone in their range"
+                        );
                     }
                     let start_version = comp_to_ver(comparator);
                     let mut end_version = if start_version.major == 0 {
@@ -201,7 +207,10 @@ impl TryFrom<&semver::VersionReq> for UnaffectedRange {
                 }
                 Op::Tilde => {
                     if input.comparators.len() != 1 {
-                        fail!(BadParam, "Selectors that define both the upper and lower bound (e.g. '~1.0') must be alone in their range");
+                        fail!(
+                            BadParam,
+                            "Selectors that define both the upper and lower bound (e.g. '~1.0') must be alone in their range"
+                        );
                     }
                     let start_version = comp_to_ver(comparator);
                     let major = comparator.major;

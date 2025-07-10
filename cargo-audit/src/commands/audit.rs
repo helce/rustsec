@@ -14,7 +14,7 @@ use crate::{
     prelude::*,
 };
 use abscissa_core::{
-    config::Override, error::Context, terminal::ColorChoice, FrameworkError, FrameworkErrorKind,
+    FrameworkError, FrameworkErrorKind, config::Override, error::Context, terminal::ColorChoice,
 };
 use clap::{Parser, ValueEnum};
 use rustsec::platforms::target::{Arch, OS};
@@ -211,7 +211,7 @@ impl Override<AuditConfig> for AuditCommand {
         }
 
         config.advisories.ignore_source |= self.ignore_source;
-        config.database.fetch |= !self.no_fetch;
+        config.database.fetch &= !self.no_fetch;
         config.database.stale |= self.stale;
 
         if !self.target_arch.is_empty() {
@@ -286,5 +286,36 @@ impl AuditCommand {
     /// Initialize `Auditor`
     pub fn auditor(&self) -> Auditor {
         Auditor::new(&APP.config())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Ensure that when the database fetch option is false in the config file
+    /// that it takes precedence when the CLI --no-fetch flag is _not_ set.
+    #[test]
+    fn override_default_fetch_option() {
+        // Assert the default value for the fetch option is true
+        let mut config: AuditConfig = AuditConfig::default();
+        assert!(config.database.fetch);
+
+        let mut audit_command = AuditCommand::default();
+
+        let overridden_config = audit_command.override_config(config.clone()).unwrap();
+        assert!(overridden_config.database.fetch);
+
+        // as the CLI flag --no-fetch is false when not provided
+        // override_config should not change the fetch option
+        // when it is set to false in the config file
+        config.database.fetch = false;
+        let overridden_config = audit_command.override_config(config.clone()).unwrap();
+        assert!(!overridden_config.database.fetch);
+
+        config.database.fetch = true;
+        audit_command.no_fetch = true;
+        let overridden_config = audit_command.override_config(config.clone()).unwrap();
+        assert!(!overridden_config.database.fetch);
     }
 }

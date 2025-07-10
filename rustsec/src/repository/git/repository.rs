@@ -34,7 +34,7 @@ impl Repository {
     pub fn default_path() -> PathBuf {
         home::cargo_home()
             .unwrap_or_else(|err| {
-                panic!("Error locating Cargo home directory: {}", err);
+                panic!("Error locating Cargo home directory: {err}");
             })
             .join(ADVISORY_DB_DIRECTORY)
     }
@@ -141,10 +141,10 @@ impl Repository {
             .ok()
             .map(|repo| repo.to_thread_local())
             .filter(|repo| {
-                repo.find_remote("origin").map_or(false, |remote| {
+                repo.find_remote("origin").is_ok_and(|remote| {
                     remote
                         .url(DIR)
-                        .map_or(false, |remote_url| remote_url.to_bstring() == url)
+                        .is_some_and(|remote_url| remote_url.to_bstring() == url)
                 })
             })
             .or_else(|| gix::open_opts(&path, open_with_complete_config).ok());
@@ -237,7 +237,7 @@ impl Repository {
     /// Path to the local checkout of a git repository
     pub fn path(&self) -> &Path {
         // Safety: Would fail if this is a bare repo, which we aren't
-        self.repo.work_dir().unwrap()
+        self.repo.workdir().unwrap()
     }
 
     /// Determines if the tree pointed to by `HEAD` contains the specified path
@@ -248,7 +248,7 @@ impl Repository {
                 .ok()?
                 .tree()
                 .ok()?
-                .lookup_entry_by_path(path, &mut Vec::new())
+                .lookup_entry_by_path(path)
                 .ok()
                 .map(|_e| true)
         };
@@ -295,7 +295,7 @@ impl Repository {
         let remote_head_id = tame_index::utils::git::write_fetch_head(&repo, &outcome, &remote)
             .map_err(Error::from_tame)?;
 
-        use gix::refs::{transaction as tx, Target};
+        use gix::refs::{Target, transaction as tx};
 
         // In all (hopefully?) cases HEAD is a symbolic reference to
         // refs/heads/<branch> which is a peeled commit id, if that's the case

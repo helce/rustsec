@@ -1,7 +1,7 @@
 //! Advisory keywords
 
 use crate::error::Error;
-use serde::{de::Error as DeError, Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, de::Error as DeError};
 use std::str::FromStr;
 
 /// Keywords on advisories, similar to Cargo keywords
@@ -24,7 +24,7 @@ impl AsRef<str> for Keyword {
 impl<'de> Deserialize<'de> for Keyword {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         Self::from_str(&String::deserialize(deserializer)?)
-            .map_err(|e| D::Error::custom(format!("{}", e)))
+            .map_err(|e| D::Error::custom(format!("{e}")))
     }
 }
 

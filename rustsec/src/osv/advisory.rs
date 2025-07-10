@@ -8,9 +8,9 @@ use tame_index::external::gix;
 use super::ranges_for_advisory;
 use crate::advisory::Versions;
 use crate::{
-    advisory::{affected::FunctionPath, Affected, Category, Id, Informational},
-    repository::git::{self, GitModificationTimes, GitPath},
     Advisory,
+    advisory::{Affected, Category, Id, Informational, affected::FunctionPath},
+    repository::git::{self, GitModificationTimes, GitPath},
 };
 use serde::{Deserialize, Deserializer, Serialize};
 use std::str::FromStr;
@@ -22,6 +22,7 @@ const ECOSYSTEM: &str = "crates.io";
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(docsrs, doc(cfg(feature = "osv-export")))]
 pub struct OsvAdvisory {
+    #[serde(skip_serializing_if = "Option::is_none")]
     schema_version: Option<semver::Version>,
     id: Id,
     modified: String,  // maybe add an rfc3339 newtype?

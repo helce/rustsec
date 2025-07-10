@@ -1,4 +1,4 @@
-#![deny(warnings, missing_docs, trivial_casts, unused_qualifications)]
+#![deny(trivial_casts, unused_qualifications)]
 #![forbid(unsafe_code)]
 
 use abscissa_core::testing::prelude::*;
@@ -19,7 +19,7 @@ fn lint_advisory_db() {
         .arg("lint")
         .arg("--skip-namecheck")
         .arg("rustdecimal")
-        .arg(&git::Repository::default_path())
+        .arg(git::Repository::default_path())
         .capture_stdout()
         .status()
         .expect_success();

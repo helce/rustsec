@@ -2,12 +2,12 @@
 //! of impacted systems/functions/usages.
 
 use crate::{
-    error::{Error, ErrorKind},
     Map,
+    error::{Error, ErrorKind},
 };
 use platforms::target::{Arch, OS};
 use semver::VersionReq;
-use serde::{de::Error as DeError, Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de::Error as DeError};
 use std::{
     fmt::{self, Display},
     slice,
@@ -109,9 +109,7 @@ impl FromStr for FunctionPath {
 impl<'de> Deserialize<'de> for FunctionPath {
     fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         let string = String::deserialize(deserializer)?;
-        string
-            .parse()
-            .map_err(|e| D::Error::custom(format!("{}", e)))
+        string.parse().map_err(|e| D::Error::custom(format!("{e}")))
     }
 }
 

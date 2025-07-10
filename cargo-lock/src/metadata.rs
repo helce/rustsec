@@ -1,11 +1,11 @@
 //! Package metadata
 
 use crate::{
+    Checksum, Dependency, Map,
     error::{Error, Result},
     lockfile::encoding::EncodableDependency,
-    Checksum, Dependency, Map,
 };
-use serde::{de, ser, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de, ser};
 use std::{fmt, str::FromStr};
 
 /// Prefix of metadata keys for checksum entries
@@ -21,7 +21,7 @@ pub struct MetadataKey(String);
 impl MetadataKey {
     /// Create a metadata key for a checksum for the given dependency
     pub fn for_checksum(dep: &Dependency) -> Self {
-        MetadataKey(format!("{}{}", CHECKSUM_PREFIX, dep))
+        MetadataKey(format!("{CHECKSUM_PREFIX}{dep}"))
     }
 
     /// Is this metadata key a checksum entry?

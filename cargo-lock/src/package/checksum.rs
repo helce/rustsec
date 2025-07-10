@@ -1,7 +1,7 @@
 //! Package checksums (i.e. SHA-256 digests)
 
 use crate::{Error, Result};
-use serde::{de, ser, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de, ser};
 use std::{fmt, str::FromStr};
 
 /// Cryptographic checksum (SHA-256) for a package
@@ -55,14 +55,14 @@ impl FromStr for Checksum {
 impl fmt::Debug for Checksum {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Checksum::Sha256(_) => write!(f, "Sha256({:x})", self),
+            Checksum::Sha256(_) => write!(f, "Sha256({self:x})"),
         }
     }
 }
 
 impl fmt::Display for Checksum {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:x}", self)
+        write!(f, "{self:x}")
     }
 }
 
@@ -71,7 +71,7 @@ impl fmt::LowerHex for Checksum {
         match self {
             Checksum::Sha256(digest) => {
                 for b in digest {
-                    write!(f, "{:02x}", b)?;
+                    write!(f, "{b:02x}")?;
                 }
             }
         }
@@ -85,7 +85,7 @@ impl fmt::UpperHex for Checksum {
         match self {
             Checksum::Sha256(digest) => {
                 for b in digest {
-                    write!(f, "{:02X}", b)?;
+                    write!(f, "{b:02X}")?;
                 }
             }
         }
