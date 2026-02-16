@@ -31,7 +31,7 @@ pub enum Arch {
     /// `csky`
     Csky,
 
-    /// `e2k`
+    /// `e2k`: 64-bit Elbrus CPU architecture
     E2k,
 
     /// `hexagon`

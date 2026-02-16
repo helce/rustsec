@@ -26,6 +26,7 @@ pub(crate) const COMMENTS: &[(&str, &str)] = &[
 ("aarch64", "ARMv8 64-bit architecture"),
 ("arm", "32-bit ARM architecture"),
 ("asm", "asm.js output"),
+("e2k", "64-bit Elbrus CPU architecture"),
 ("mips", "32-bit MIPS CPU architecture"),
 ("mips64", "64-bit MIPS CPU architecture"),
 ("msp430", "16-bit MSP430 microcontrollers"),
