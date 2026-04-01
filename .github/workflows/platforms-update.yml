@@ -15,8 +15,10 @@ jobs:
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
       - name: Regenerate platform files
         run: |
           cd platforms
-          ./generate_platform_files.sh
+          ./regenerate-platforms-crate.sh
           git diff --exit-code

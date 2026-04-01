@@ -252,6 +252,7 @@ pub(crate) const ALL: &[Platform] = &[
     RISCV64IMAC_UNKNOWN_NUTTX_ELF,
     S390X_UNKNOWN_LINUX_GNU,
     S390X_UNKNOWN_LINUX_MUSL,
+    S390X_UNKNOWN_NONE_SOFTFLOAT,
     SPARC_UNKNOWN_LINUX_GNU,
     SPARC_UNKNOWN_NONE_ELF,
     SPARC64_UNKNOWN_HELENOS,
@@ -403,7 +404,7 @@ pub(crate) const AARCH64_APPLE_TVOS: Platform = Platform {
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 tvOS Simulator
@@ -414,7 +415,7 @@ pub(crate) const AARCH64_APPLE_TVOS_SIM: Platform = Platform {
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 Apple visionOS
@@ -425,7 +426,7 @@ pub(crate) const AARCH64_APPLE_VISIONOS: Platform = Platform {
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 Apple visionOS Simulator
@@ -436,7 +437,7 @@ pub(crate) const AARCH64_APPLE_VISIONOS_SIM: Platform = Platform {
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 Apple WatchOS
@@ -447,7 +448,7 @@ pub(crate) const AARCH64_APPLE_WATCHOS: Platform = Platform {
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 Apple WatchOS Simulator
@@ -458,7 +459,7 @@ pub(crate) const AARCH64_APPLE_WATCHOS_SIM: Platform = Platform {
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 SOLID with TOPPERS/ASP3
@@ -2765,7 +2766,7 @@ pub(crate) const RISCV64A23_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// RISC-V FreeBSD
@@ -2942,6 +2943,17 @@ pub(crate) const S390X_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
+};
+
+/// Bare S390x (softfloat ABI)
+pub(crate) const S390X_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
+    target_triple: "s390x-unknown-none-softfloat",
+    target_arch: Arch::S390X,
+    target_os: OS::None,
+    target_env: Env::None,
+    target_endian: Endian::Big,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Two,
 };
 
 /// 32-bit SPARC Linux
