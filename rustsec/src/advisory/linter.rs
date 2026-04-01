@@ -34,11 +34,10 @@ impl Linter {
         }
 
         let advisory_data = fs::read_to_string(path).map_err(|e| {
-            format_err!(
+            crate::Error::with_source(
                 crate::ErrorKind::Io,
-                "couldn't open {}: {}",
-                path.display(),
-                e
+                format!("couldn't open {}", path.display()),
+                e,
             )
         })?;
 
@@ -209,7 +208,7 @@ impl Linter {
                         }
                     }
                     "aliases" | "cvss" | "keywords" | "package" | "references" | "related"
-                    | "title" | "withdrawn" | "description" => (),
+                    | "title" | "withdrawn" | "description" | "expect-deleted" => (),
                     _ => self.errors.push(Error {
                         kind: ErrorKind::key(key),
                         section: Some("advisory"),

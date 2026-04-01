@@ -1,15 +1,17 @@
 //! Git repositories
-use tame_index::{external::gix, utils::flock::LockOptions};
-
-use super::{Commit, DEFAULT_URL};
-use crate::{
-    error::{Error, ErrorKind},
-    fs,
-};
 use std::{
+    fmt::Write,
+    fs,
     path::{Path, PathBuf},
+    str,
     time::Duration,
 };
+
+use gix::{bstr::ByteSlice, protocol::handshake::Ref};
+use tame_index::utils::flock::LockOptions;
+
+use super::{Commit, DEFAULT_URL};
+use crate::error::{Error, ErrorKind};
 
 /// Directory under `~/.cargo` where the advisory-db repo will be kept
 const ADVISORY_DB_DIRECTORY: &str = "advisory-db";
@@ -101,9 +103,9 @@ impl Repository {
         // with no way to recover. They don't even write the PID to the lockfile.
         let lock_path = tame_index::Path::from_path(&path)
             .ok_or_else(|| {
-                format_err!(
+                Error::new(
                     ErrorKind::BadParam,
-                    "Path to the advisory DB directory is not valid UTF-8!"
+                    "Path to the advisory DB directory is not valid UTF-8!",
                 )
             })?
             .with_extension(".lock");
@@ -157,18 +159,28 @@ impl Repository {
 
                 let (mut prep_checkout, out) = gix::prepare_clone(url, path)
                     .map_err(|err| {
-                        format_err!(ErrorKind::Repo, "failed to prepare clone: {}", err)
+                        Error::with_source(
+                            ErrorKind::Repo,
+                            "failed to prepare clone".to_owned(),
+                            err,
+                        )
                     })?
                     .with_remote_name("origin")
-                    .map_err(|err| format_err!(ErrorKind::Repo, "invalid remote name: {}", err))?
+                    .map_err(|err| {
+                        Error::with_source(ErrorKind::Repo, "invalid remote name".to_owned(), err)
+                    })?
                     .configure_remote(|remote| Ok(remote.with_refspecs([REF_SPEC], DIR)?))
                     .fetch_then_checkout(&mut progress, should_interrupt)
-                    .map_err(|err| format_err!(ErrorKind::Repo, "failed to fetch repo: {}", err))?;
+                    .map_err(|err| Error::with_source(ErrorKind::Repo, err.to_string(), err))?;
 
                 let repo = prep_checkout
                     .main_worktree(&mut progress, should_interrupt)
                     .map_err(|err| {
-                        format_err!(ErrorKind::Repo, "failed to checkout fresh clone: {}", err)
+                        Error::with_source(
+                            ErrorKind::Repo,
+                            "failed to checkout fresh clone".to_owned(),
+                            err,
+                        )
                     })?
                     .0;
 
@@ -181,12 +193,7 @@ impl Repository {
         let (mut repo, fetch_outcome) = open_or_clone_repo()?;
 
         if let Some(fetch_outcome) = fetch_outcome {
-            tame_index::utils::git::write_fetch_head(
-                &repo,
-                &fetch_outcome,
-                &repo.find_remote("origin").unwrap(),
-            )
-            .map_err(Error::from_tame)?;
+            write_fetch_head(&repo, &fetch_outcome, &repo.find_remote("origin").unwrap())?;
         } else {
             // If we didn't open a fresh repo we need to peform a fetch ourselves, and
             // do the work of updating the HEAD to point at the latest remote HEAD, which
@@ -216,11 +223,10 @@ impl Repository {
     pub fn open<P: Into<PathBuf>>(into_path: P) -> Result<Self, Error> {
         let path = into_path.into();
         let mut repo = gix::open(&path).map_err(|err| {
-            format_err!(
+            Error::with_source(
                 ErrorKind::Repo,
-                "failed to open repository at '{}': {}",
-                path.display(),
-                err
+                format!("failed to open repository at '{}'", path.display()),
+                err,
             )
         })?;
 
@@ -263,22 +269,34 @@ impl Repository {
         config
             .set_raw_value_by("committer", None, "name", "rustsec")
             .map_err(|err| {
-                format_err!(ErrorKind::Repo, "failed to set `committer.name`: {}", err)
+                Error::with_source(
+                    ErrorKind::Repo,
+                    "failed to set `committer.name`".to_owned(),
+                    err,
+                )
             })?;
         // Note we _have_ to set the email as well, but luckily gix does not actually
         // validate if it's a proper email or not :)
         config
             .set_raw_value_by("committer", None, "email", "")
             .map_err(|err| {
-                format_err!(ErrorKind::Repo, "failed to set `committer.email`: {}", err)
+                Error::with_source(
+                    ErrorKind::Repo,
+                    "failed to set `committer.email`".to_owned(),
+                    err,
+                )
             })?;
 
-        let repo = config
-            .commit_auto_rollback()
-            .map_err(|err| format_err!(ErrorKind::Repo, "failed to set `committer`: {}", err))?;
+        let repo = config.commit_auto_rollback().map_err(|err| {
+            Error::with_source(ErrorKind::Repo, "failed to set `committer`".to_owned(), err)
+        })?;
 
         let mut remote = repo.find_remote("origin").map_err(|err| {
-            format_err!(ErrorKind::Repo, "failed to find `origin` remote: {}", err)
+            Error::with_source(
+                ErrorKind::Repo,
+                "failed to find `origin` remote".to_owned(),
+                err,
+            )
         })?;
 
         remote
@@ -288,14 +306,23 @@ impl Repository {
         // Perform the actual fetch
         let outcome = remote
             .connect(DIR)
-            .map_err(|err| format_err!(ErrorKind::Repo, "failed to connect to remote: {}", err))?
+            .map_err(|err| {
+                Error::with_source(
+                    ErrorKind::Repo,
+                    "failed to connect to remote".to_owned(),
+                    err,
+                )
+            })?
             .prepare_fetch(&mut gix::progress::Discard, Default::default())
-            .map_err(|err| format_err!(ErrorKind::Repo, "failed to prepare fetch: {}", err))?
+            .map_err(|err| {
+                Error::with_source(ErrorKind::Repo, "failed to prepare fetch".to_owned(), err)
+            })?
             .receive(&mut gix::progress::Discard, &gix::interrupt::IS_INTERRUPTED)
-            .map_err(|err| format_err!(ErrorKind::Repo, "failed to fetch: {}", err))?;
+            .map_err(|err| {
+                Error::with_source(ErrorKind::Repo, "failed to fetch".to_owned(), err)
+            })?;
 
-        let remote_head_id = tame_index::utils::git::write_fetch_head(&repo, &outcome, &remote)
-            .map_err(Error::from_tame)?;
+        let remote_head_id = write_fetch_head(&repo, &outcome, &remote)?;
 
         use gix::refs::{Target, transaction as tx};
 
@@ -306,7 +333,9 @@ impl Repository {
         use gix::head::Kind;
         let edit = match repo
             .head()
-            .map_err(|err| format_err!(ErrorKind::Repo, "unable to locate HEAD: {}", err))?
+            .map_err(|err| {
+                Error::with_source(ErrorKind::Repo, "unable to locate HEAD".to_owned(), err)
+            })?
             .kind
         {
             Kind::Symbolic(sref) => {
@@ -346,11 +375,180 @@ impl Repository {
             deref: true,
         });
 
-        repo.edit_reference(edit)
-            .map_err(|err| format_err!(ErrorKind::Repo, "failed to set update reflog: {}", err))?;
+        repo.edit_reference(edit).map_err(|err| {
+            Error::with_source(
+                ErrorKind::Repo,
+                "failed to set update reflog".to_owned(),
+                err,
+            )
+        })?;
 
         Ok(())
     }
+}
+
+/// Writes the `FETCH_HEAD` for the specified fetch outcome to the specified git
+/// repository
+///
+/// This function is narrowly focused on on writing a `FETCH_HEAD` that contains
+/// exactly two pieces of information, the id of the commit pointed to by the
+/// remote `HEAD`, and, if it exists, the same id with the remote branch whose
+/// `HEAD` is the same. This focus gives use two things:
+///     1. `FETCH_HEAD` that can be parsed to the correct remote HEAD by
+/// [`gix`](https://github.com/Byron/gitoxide/commit/eb2b513bd939f6b59891d0a4cf5465b1c1e458b3)
+///     1. A `FETCH_HEAD` that closely (or even exactly) matches that created by
+/// cargo via git or git2 when fetching only `+HEAD:refs/remotes/origin/HEAD`
+///
+/// Calling this function for the fetch outcome of a clone will write `FETCH_HEAD`
+/// just as if a normal fetch had occurred, but note that AFAICT neither git nor
+/// git2 does this, ie. a fresh clone will not have a `FETCH_HEAD` present. I don't
+/// _think_ that has negative implications, but if it does...just don't call this
+/// function on the result of a clone :)
+///
+/// Note that the remote provided should be the same remote used for the fetch
+/// operation. The reason this is not just grabbed from the repo is because
+/// repositories may not have the configured remote, or the remote was modified
+/// (eg. replacing refspecs) before the fetch operation
+fn write_fetch_head(
+    repo: &gix::Repository,
+    fetch: &gix::remote::fetch::Outcome,
+    remote: &gix::Remote<'_>,
+) -> Result<gix::ObjectId, Error> {
+    // Find the remote head commit
+    let (head_target_branch, oid) = fetch
+        .ref_map
+        .mappings
+        .iter()
+        .find_map(|mapping| {
+            let gix::remote::fetch::refmap::Source::Ref(rref) = &mapping.remote else {
+                return None;
+            };
+
+            let Ref::Symbolic {
+                full_ref_name,
+                target,
+                object,
+                ..
+            } = rref
+            else {
+                return None;
+            };
+
+            (full_ref_name == "HEAD").then_some((target, object))
+        })
+        .ok_or_else(|| Error::new(ErrorKind::Repo, "unable to find remote HEAD"))?;
+
+    let remote_url = {
+        let ru = remote
+            .url(gix::remote::Direction::Fetch)
+            .expect("can't fetch without a fetch url");
+        let s = ru.to_bstring();
+        let v = s.into();
+        String::from_utf8(v).expect("remote url was not utf-8 :-/")
+    };
+
+    let fetch_head = {
+        let mut hex_id = [0u8; 40];
+        let gix::ObjectId::Sha1(sha1) = oid else {
+            return Err(Error::new(
+                ErrorKind::Repo,
+                "unsupported object id format in remote HEAD",
+            ));
+        };
+        let commit_id = encode_hex(sha1, &mut hex_id);
+
+        let mut fetch_head = String::new();
+
+        let remote_name = remote
+            .name()
+            .and_then(|n| {
+                let gix::remote::Name::Symbol(name) = n else {
+                    return None;
+                };
+                Some(name.as_ref())
+            })
+            .unwrap_or("origin");
+
+        // We write the remote HEAD first, but _only_ if it was explicitly requested
+        if remote
+            .refspecs(gix::remote::Direction::Fetch)
+            .iter()
+            .any(|rspec| {
+                let rspec = rspec.to_ref();
+                if !rspec.remote().is_some_and(|r| r.ends_with(b"HEAD")) {
+                    return false;
+                }
+
+                rspec.local().is_some_and(|l| {
+                    l.to_str().ok().and_then(|l| {
+                        l.strip_prefix("refs/remotes/")
+                            .and_then(|l| l.strip_suffix("/HEAD"))
+                    }) == Some(remote_name)
+                })
+            })
+        {
+            writeln!(&mut fetch_head, "{commit_id}\t\t{remote_url}").unwrap();
+        }
+
+        // Attempt to get the branch name, but if it looks suspect just skip this,
+        // it _should_ be fine, or at least, we've already written the only thing
+        // that gix can currently parse
+        if let Some(branch_name) = head_target_branch
+            .to_str()
+            .ok()
+            .and_then(|s| s.strip_prefix("refs/heads/"))
+        {
+            writeln!(
+                &mut fetch_head,
+                "{commit_id}\t\tbranch '{branch_name}' of {remote_url}"
+            )
+            .unwrap();
+        }
+
+        fetch_head
+    };
+
+    // We _could_ also emit other branches/tags like git does, however it's more
+    // complicated than just our limited use case of writing remote HEAD
+    //
+    // 1. Remote branches are always emitted, however in gix those aren't part
+    // of the ref mappings if they haven't been updated since the last fetch
+    // 2. Conversely, tags are _not_ written by git unless they have been changed
+    // added, but gix _does_ always place those in the fetch mappings
+
+    if fetch_head.is_empty() {
+        return Err(Error::new(ErrorKind::Repo, "unable to find remote HEAD"));
+    }
+
+    let fetch_head_path = repo.path().join("FETCH_HEAD");
+    fs::write(&fetch_head_path, fetch_head).map_err(|err| {
+        Error::with_source(
+            ErrorKind::Io,
+            format!("failed to write {}", fetch_head_path.display()),
+            err,
+        )
+    })?;
+
+    Ok(*oid)
+}
+
+/// Encodes a slice of bytes into a hexadecimal string to the specified buffer
+fn encode_hex<'out, const I: usize, const O: usize>(
+    input: &[u8; I],
+    output: &'out mut [u8; O],
+) -> &'out str {
+    assert_eq!(I * 2, O);
+
+    const CHARS: &[u8] = b"0123456789abcdef";
+
+    for (i, &byte) in input.iter().enumerate() {
+        let i = i * 2;
+        output[i] = CHARS[(byte >> 4) as usize];
+        output[i + 1] = CHARS[(byte & 0xf) as usize];
+    }
+
+    // We only emit ASCII hex characters, so this is guaranteed to be valid UTF-8
+    str::from_utf8(output).expect("hex encoding produced invalid UTF-8")
 }
 
 const OBJECT_CACHE_SIZE: usize = 4 * 1024 * 1024;

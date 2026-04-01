@@ -5,10 +5,12 @@ use super::{
 };
 use crate::advisory::license::License;
 use crate::{SourceId, collection::Collection, package};
+use cvss::Cvss;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
 /// The `[advisory]` section of a RustSec security advisory
+#[non_exhaustive]
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Metadata {
     /// Security advisory ID (e.g. RUSTSEC-YYYY-NNNN)
@@ -58,7 +60,7 @@ pub struct Metadata {
     /// ```text
     /// CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N
     /// ```
-    pub cvss: Option<cvss::v3::Base>,
+    pub cvss: Option<Cvss>,
 
     /// Informational advisories can be used to warn users about issues
     /// affecting a particular crate without failing the build.
@@ -86,4 +88,11 @@ pub struct Metadata {
     /// License under which the advisory content is available
     #[serde(default)]
     pub license: License,
+
+    /// Whether the crate is expected to be deleted from the registry
+    ///
+    /// Linting normally checks that a crate is available on crates.io, but this might not be the
+    /// case, for example if a malicious crate has been completely removed.
+    #[serde(rename = "expect-deleted", default)]
+    pub expect_deleted: bool,
 }

@@ -1,5 +1,7 @@
 name: Release
 
+permissions: {}
+
 on:
   workflow_dispatch:
     inputs:
@@ -19,6 +21,8 @@ env:
 
 jobs:
   build:
+    permissions:
+      contents: write # to create releases
     strategy:
       matrix:
         name:
@@ -27,6 +31,7 @@ jobs:
           - linux-armv7-gnu
           - linux-arm64-gnu
           - mac-x86-64
+          - mac-arm64
           - windows-x86-64
         include:
           - name: linux-x86-64-gnu
@@ -54,6 +59,11 @@ jobs:
             target: x86_64-apple-darwin
             cross: false
 
+          - name: mac-arm64
+            os: macos-latest
+            target: aarch64-apple-darwin
+            cross: false
+
           - name: windows-x86-64
             os: windows-latest
             target: x86_64-pc-windows-msvc
@@ -63,17 +73,21 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/cache@v4.3.0
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.lock') }}
           # The tag to build or the tag received by the tag event
           ref: ${{ github.event.inputs.version || github.ref }}
-      - uses: actions/cache@v4.3.0
+          lookup-only: true
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
         with:
           path: ~/.cargo/git
           key: ${{ runner.os }}-cargo-index-${{ hashFiles('Cargo.lock') }}
+          lookup-only: true
       - uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
         with:
           toolchain: stable
@@ -94,26 +108,26 @@ jobs:
           ext=""
           [[ "${{ matrix.name }}" == windows-* ]] && ext=".exe"
           bin="../target/${{ matrix.target }}/release/cargo-audit${ext}"
-          version=$(echo "${{ github.ref }}" | cut -d/ -f4)
+          version=$(echo "${GITHUB_REF}" | cut -d/ -f4)
           dst="cargo-audit-${{ matrix.target }}-${version}"
           mkdir "$dst"
           mv "$bin" "$dst/"
           mv README.md CHANGELOG.md LICENSE-APACHE LICENSE-MIT "$dst/"
       - name: Archive (tar)
-        if: '! startsWith(matrix.name, ''windows-'')'
+        if: "! startsWith(matrix.name, 'windows-')"
         shell: bash
         run: |
-          version=$(echo "${{ github.ref }}" | cut -d/ -f4)
+          version=$(echo "${GITHUB_REF}" | cut -d/ -f4)
           dst="cargo-audit-${{ matrix.target }}-${version}"
           tar cavf "../$dst.tgz" "$dst"
       - name: Archive (zip)
         if: startsWith(matrix.name, 'windows-')
         shell: bash
         run: |
-          version=$(echo "${{ github.ref }}" | cut -d/ -f4)
+          version=$(echo "${GITHUB_REF}" | cut -d/ -f4)
           dst="cargo-audit-${{ matrix.target }}-${version}"
           7z a "../$dst.zip" "$dst"
-      - uses: softprops/action-gh-release@62c96d0c4e8a889135c1f3a25910db8dbe0e85f7
+      - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           files: |
             cargo-audit-*.tgz
