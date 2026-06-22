@@ -3,7 +3,7 @@
 //! `cargo audit` is a Cargo subcommand. Install it using the following:
 //!
 //! ```text
-//! $ cargo install cargo-audit --locked
+//! $ cargo install cargo-audit
 //! ```
 //!
 //! Then run `cargo audit` in the toplevel directory of any crate or workspace.
@@ -30,6 +30,9 @@ mod prelude;
 pub mod presenter;
 mod sarif;
 pub use sarif::SarifLog;
+
+#[cfg(feature = "binary-scanning")]
+mod binary_scanning;
 
 /// Current version of the `cargo-audit` crate
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

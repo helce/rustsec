@@ -1,26 +1,29 @@
 //! Presenter for `rustsec::Report` information.
 
-use crate::{
-    config::{DenyOption, OutputConfig, OutputFormat},
-    prelude::*,
-};
+use std::{collections::BTreeSet as Set, io, path::Path};
+use std::{io::Write as _, string::ToString as _};
+
 use abscissa_core::terminal::{
     self,
     Color::{self, Red, Yellow},
 };
 use rustsec::{
-    WarningKind,
+    Vulnerability, Warning, WarningKind,
     advisory::License,
     cargo_lock::{
         Lockfile, Package,
-        dependency::{self, Dependency, graph::EdgeDirection},
+        dependency::{Dependency, Tree, graph::EdgeDirection},
     },
 };
-use std::{collections::BTreeSet as Set, io, path::Path};
-use std::{io::Write as _, string::ToString as _};
+#[cfg(feature = "binary-scanning")]
+use rustsec::{advisory::affected::FunctionPath, binary_scanning::BinaryReport};
 
 #[cfg(feature = "binary-scanning")]
-use rustsec::binary_scanning::BinaryReport;
+use crate::binary_scanning::SymbolSet;
+use crate::{
+    config::{DenyOption, OutputConfig, OutputFormat},
+    prelude::*,
+};
 
 /// Vulnerability information presenter
 #[derive(Clone, Debug)]
@@ -34,6 +37,10 @@ pub struct Presenter {
 
     /// Output configuration
     config: OutputConfig,
+
+    /// Binary contents for affected-function analysis
+    #[cfg(feature = "binary-scanning")]
+    binary_contents: Option<Vec<u8>>,
 }
 
 impl Presenter {
@@ -48,7 +55,15 @@ impl Presenter {
                 .copied()
                 .collect(),
             config: config.clone(),
+            #[cfg(feature = "binary-scanning")]
+            binary_contents: None,
         }
+    }
+
+    /// Set the binary contents for affected-function analysis
+    #[cfg(feature = "binary-scanning")]
+    pub fn set_binary_contents(&mut self, contents: Vec<u8>) {
+        self.binary_contents = Some(contents);
     }
 
     /// Information to display before a report is generated
@@ -129,16 +144,79 @@ impl Presenter {
             .dependency_tree()
             .expect("invalid Cargo.lock dependency tree");
 
+        #[cfg(feature = "binary-scanning")]
+        let symbols = match &self.binary_contents {
+            Some(binary_contents) => {
+                let packages = report
+                    .vulnerabilities
+                    .list
+                    .iter()
+                    .map(|v| &v.package)
+                    .chain(report.warnings.values().flatten().map(|w| &w.package));
+
+                match SymbolSet::from_file(binary_contents, packages) {
+                    Ok(symbols) => Some(symbols),
+                    Err(e) => {
+                        status_warn!(
+                            "Failed to extract symbols from binary for affected-function analysis: {}",
+                            e
+                        );
+                        None
+                    }
+                }
+            }
+            None => None,
+        };
+
         // NOTE: when modifying the following logic, be sure to also update should_exit_with_failure()
 
         // Print out vulnerabilities and warnings
         for vulnerability in &report.vulnerabilities.list {
-            self.print_vulnerability(vulnerability, &tree);
+            self.print_vulnerability(vulnerability);
+
+            #[cfg(feature = "binary-scanning")]
+            if let Some(symbols) = &symbols {
+                self.print_affected(
+                    Red,
+                    symbols.filter(vulnerability.affected_functions().unwrap_or_default()),
+                );
+            }
+
+            self.print_tree(Red, &vulnerability.package, &tree);
+            println!();
         }
 
         for warnings in report.warnings.values() {
             for warning in warnings.iter() {
-                self.print_warning(warning, &tree)
+                let color = self.warning_color(self.deny_warning_kinds.contains(&warning.kind));
+                self.print_warning(warning, color);
+
+                #[cfg(feature = "binary-scanning")]
+                if let Some(symbols) = &symbols {
+                    self.print_affected(
+                        color,
+                        symbols.filter(
+                            warning
+                                .affected
+                                .as_ref()
+                                .map(|affected| affected.functions.iter())
+                                .unwrap_or_default()
+                                .filter_map(|(path, version_reqs)| {
+                                    if version_reqs
+                                        .iter()
+                                        .any(|req| req.matches(&warning.package.version))
+                                    {
+                                        Some(path.clone())
+                                    } else {
+                                        None
+                                    }
+                                }),
+                        ),
+                    );
+                }
+
+                self.print_tree(color, &warning.package, &tree);
+                println!();
             }
         }
 
@@ -203,7 +281,7 @@ impl Presenter {
         }
         // Print out any self-advisories
         let msg = "This copy of cargo-audit has known advisories! Upgrade cargo-audit to the \
-        latest version: cargo install --force cargo-audit --locked";
+        latest version: cargo install --force cargo-audit";
 
         if self.config.deny.contains(&DenyOption::Warnings) {
             status_err!(msg);
@@ -261,11 +339,7 @@ impl Presenter {
     }
 
     /// Print information about the given vulnerability
-    fn print_vulnerability(
-        &mut self,
-        vulnerability: &rustsec::Vulnerability,
-        tree: &dependency::Tree,
-    ) {
+    fn print_vulnerability(&self, vulnerability: &Vulnerability) {
         self.print_attr(Red, "Crate:    ", &vulnerability.package.name);
         self.print_attr(Red, "Version:  ", vulnerability.package.version.to_string());
         self.print_metadata(&vulnerability.advisory, Red);
@@ -289,15 +363,10 @@ impl Presenter {
                 ),
             );
         }
-
-        self.print_tree(Red, &vulnerability.package, tree);
-        println!();
     }
 
     /// Print information about a given warning
-    fn print_warning(&mut self, warning: &rustsec::Warning, tree: &dependency::Tree) {
-        let color = self.warning_color(self.deny_warning_kinds.contains(&warning.kind));
-
+    fn print_warning(&self, warning: &Warning, color: Color) {
         self.print_attr(color, "Crate:    ", &warning.package.name);
         self.print_attr(color, "Version:  ", warning.package.version.to_string());
         self.print_attr(color, "Warning:  ", warning.kind.as_str());
@@ -305,9 +374,6 @@ impl Presenter {
         if let Some(metadata) = &warning.advisory {
             self.print_metadata(metadata, color)
         }
-
-        self.print_tree(color, &warning.package, tree);
-        println!();
     }
 
     /// Get the color to use when displaying warnings
@@ -357,14 +423,30 @@ impl Presenter {
             .unwrap();
     }
 
+    #[cfg(feature = "binary-scanning")]
+    fn print_affected(&self, color: Color, funcs: impl IntoIterator<Item = FunctionPath>) {
+        let mut funcs = funcs.into_iter().peekable();
+        if funcs.peek().is_none() {
+            return;
+        }
+        self.print_attr(
+            color,
+            "Affected: ",
+            funcs
+                .map(|func| func.to_string())
+                .collect::<Vec<_>>()
+                .join(", "),
+        );
+    }
+
     /// Print the inverse dependency tree to standard output
-    fn print_tree(&mut self, color: Color, package: &Package, tree: &dependency::Tree) {
+    fn print_tree(&mut self, color: Color, package: &Package, tree: &Tree) {
         // Only show the tree once per package
         if !self.displayed_packages.insert(Dependency::from(package)) {
             return;
         }
 
-        if !self.config.show_tree.unwrap_or(true) {
+        if !self.config.show_tree {
             return;
         }
 
@@ -384,4 +466,120 @@ impl Presenter {
         )
         .unwrap();
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use abscissa_core::testing::{CmdRunner, process::Process};
+    use once_cell::sync::Lazy;
+    use std::{
+        collections::{BTreeMap, BTreeSet},
+        io::Read,
+        path::Path,
+        str::from_utf8,
+    };
+    use tempfile::TempDir;
+
+    #[test]
+    fn affected_functions() {
+        let binary_path = Path::new("tests/support/binaries/binary-with-affected-functions");
+
+        // Run `cargo audit bin...` on the binary and read its stdout.
+        let mut cmd = RUNNER.clone();
+        let mut process = cmd.arg(binary_path).capture_stdout().capture_stderr().run();
+        let reports = read_process_stdout(&mut process);
+
+        // Ensure `cargo audit bin...` exits with 1.
+        let status = process.wait().unwrap();
+        assert_eq!(1, status.code());
+
+        // Verify that all of the expected affected functions were reported.
+        for (id, function_paths) in EXPECTED_FUNCTION_PATHS {
+            let report = reports
+                .iter()
+                .find(|map| map.get("ID").unwrap() == id)
+                .unwrap_or_else(|| panic!("failed to find {id}"));
+            let affected = report
+                .get("Affected")
+                .unwrap_or_else(|| panic!("{id} has no 'Affected' line"));
+            assert_eq!(function_paths.join(", "), *affected);
+        }
+
+        // Verify that each report with an "Affected" line was expected.
+        for report in reports {
+            if !report.contains_key("Affected") {
+                continue;
+            }
+            let id = report.get("ID").unwrap();
+            assert!(
+                EXPECTED_FUNCTION_PATHS.iter().any(|(key, _)| key == id),
+                "{id} has unexpected 'Affected' line"
+            );
+        }
+    }
+
+    fn read_process_stdout(process: &mut Process<'_>) -> BTreeSet<BTreeMap<String, String>> {
+        let stdout = process.stdout();
+        let mut buf = Vec::new();
+        stdout.read_to_end(&mut buf).unwrap();
+        let s = from_utf8(&buf).unwrap();
+
+        let mut reports = BTreeSet::new();
+        let mut report = BTreeMap::new();
+        for line in s.lines() {
+            let Some(index) = line.as_bytes().iter().position(|&x| x == b':') else {
+                continue;
+            };
+            let key = &line[..index];
+            let value = line[index + 1..].trim_start();
+            // Assume "Crate:" starts a new report.
+            if key == "Crate" && !report.is_empty() {
+                reports.insert(report);
+                report = BTreeMap::new();
+            }
+            report.insert(key.to_owned(), value.to_owned());
+        }
+        if !report.is_empty() {
+            reports.insert(report);
+        }
+        reports
+    }
+
+    #[rustfmt::skip]
+    const EXPECTED_FUNCTION_PATHS: &[(&str, &[&str])] = &[
+        ("RUSTSEC-2019-0036", &["failure::Fail::__private_get_type_id__"]),
+        ("RUSTSEC-2020-0071", &["time::OffsetDateTime::now_local", "time::OffsetDateTime::try_now_local", "time::UtcOffset::current_local_offset", "time::UtcOffset::local_offset_at", "time::UtcOffset::try_current_local_offset", "time::UtcOffset::try_local_offset_at"]),
+        ("RUSTSEC-2020-0075", &["branca::Branca::decode", "branca::decode"]),
+        ("RUSTSEC-2021-0041", &["parse_duration::parse"]),
+        ("RUSTSEC-2022-0004", &["rustc_serialize::json::Json::from_str"]),
+        ("RUSTSEC-2022-0067", &["lzf::compress", "lzf::decompress"]),
+        ("RUSTSEC-2023-0032", &["ntru::types::PrivateKey::export", "ntru::types::PublicKey::export"]),
+        ("RUSTSEC-2023-0054", &["mail_internals::utils::vec_insert_bytes"]),
+        ("RUSTSEC-2024-0018", &["crayon::utils::object_pool::ObjectPool<H,T>::free"]),
+        ("RUSTSEC-2024-0020", &["whoami::realname", "whoami::realname_os", "whoami::username", "whoami::username_os"]),
+        ("RUSTSEC-2024-0360", &["xmp_toolkit::XmpFile::close"]),
+        ("RUSTSEC-2024-0401", &["zlib_rs::inflate::inflate"]),
+        ("RUSTSEC-2024-0404", &["anstream::adapter::strip_str"]),
+        ("RUSTSEC-2024-0442", &["wasmtime_jit_debug::perf_jitdump::JitDumpFile::dump_code_load_record"]),
+        ("RUSTSEC-2025-0027", &["mp3_metadata::read_from_slice"]),
+        ("RUSTSEC-2025-0113", &["shaman::cryptoutil::read_u32v_be", "shaman::cryptoutil::read_u32v_le", "shaman::cryptoutil::read_u64v_be", "shaman::cryptoutil::read_u64v_le", "shaman::cryptoutil::write_u32v_le", "shaman::cryptoutil::write_u64v_le"]),
+        ("RUSTSEC-2025-0131", &["rtvm_interpreter::Interpreter::program_counter"]),
+        ("RUSTSEC-2025-0136", &["sequoia_openpgp::crypto::ecdh::aes_key_unwrap"]),
+        ("RUSTSEC-2025-0137", &["ruint::algorithms::div::reciprocal_mg10"]),
+        ("RUSTSEC-2025-0140", &["gix_date::parse::TimeBuf::as_str"]),
+        ("RUSTSEC-2026-0097", &["rand::rng"]),
+    ];
+
+    static RUNNER: Lazy<CmdRunner> = Lazy::new(|| {
+        let mut runner = CmdRunner::default();
+        runner
+            .arg("audit")
+            .arg("--color=never")
+            .arg("--db")
+            .arg(ADVISORY_DB_DIR.path())
+            .arg("bin");
+        runner
+    });
+
+    static ADVISORY_DB_DIR: Lazy<TempDir> = Lazy::new(|| TempDir::new().unwrap());
 }

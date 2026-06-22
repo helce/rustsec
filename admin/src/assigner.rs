@@ -1,16 +1,18 @@
 //! RustSec Advisory DB tool to assign ids
 
-use crate::{Map, error::ErrorKind, prelude::*};
-use rustsec::{
-    Advisory, Collection,
-    advisory::{IdKind, Parts},
-};
 use std::{
     fs::{self, File},
     io::{BufRead, BufReader, LineWriter, Write},
     path::Path,
     process::exit,
 };
+
+use rustsec::{
+    Advisory, Collection,
+    advisory::{IdKind, Parts},
+};
+
+use crate::{Map, prelude::*};
 
 /// What sort of output should be generated on stdout.
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -70,21 +72,22 @@ pub fn assign_ids(repo_path: &Path, output_mode: OutputMode) {
         }
     }
 
-    let mut collection_strs = vec![];
-    let crates_str = Collection::Crates.to_string();
-    let rust_str = Collection::Rust.to_string();
-    collection_strs.push(crates_str);
-    collection_strs.push(rust_str);
-
     let mut assignments = vec![];
-    for collection_str in collection_strs {
+    for collection in [Collection::Crates, Collection::Rust] {
         assign_ids_across_directory(
-            collection_str,
+            collection,
             repo_path,
             &mut highest_id,
             output_mode,
             &mut assignments,
-        );
+        )
+        .unwrap_or_else(|error| {
+            status_err!(
+                "Error assigning ids for {collection} in {}: {error}",
+                repo_path.display(),
+            );
+            exit(1);
+        });
     }
 
     if output_mode != OutputMode::GithubAction {
@@ -104,68 +107,87 @@ pub fn assign_ids(repo_path: &Path, output_mode: OutputMode) {
 
 ///Assign ids to files with placeholder IDs within the directory defined by dir_path
 fn assign_ids_across_directory(
-    collection_str: String,
+    collection: Collection,
     repo_path: &Path,
     highest_ids: &mut Map<u32, u32>,
     output_mode: OutputMode,
     assignments: &mut Vec<String>,
-) {
-    let dir_path = repo_path.join(collection_str);
+) -> Result<(), rustsec::Error> {
+    let dir_path = repo_path.join(collection.to_string());
     let Ok(collection_entry) = fs::read_dir(dir_path) else {
-        return;
+        return Ok(());
     };
 
     for dir_entry in collection_entry {
-        let unwrapped_dir_entry = dir_entry.unwrap();
-        let dir_name = unwrapped_dir_entry.file_name().into_string().unwrap();
+        let unwrapped_dir_entry = dir_entry?;
+        let dir_name = unwrapped_dir_entry
+            .file_name()
+            .into_string()
+            .map_err(|os_str| {
+                rustsec::Error::new(
+                    rustsec::ErrorKind::Parse,
+                    format!("Couldn't parse directory name: {}", os_str.display()),
+                )
+            })?;
+
         let dir_path = unwrapped_dir_entry.path();
-        let dir_path_clone = dir_path.clone();
-        for advisory_entry in fs::read_dir(dir_path).unwrap() {
-            let unwrapped_advisory = advisory_entry.unwrap();
-            let advisory_path = unwrapped_advisory.path();
+        for advisory_entry in fs::read_dir(dir_path.clone())? {
+            let advisory_path = advisory_entry?.path();
             if !Advisory::is_draft(&advisory_path) {
                 continue;
             }
 
-            let advisory_data = fs::read_to_string(&advisory_path)
-                .map_err(|e| {
-                    format_err!(
-                        ErrorKind::Io,
-                        "Couldn't open {}: {}",
-                        advisory_path.display(),
-                        e
-                    );
-                })
-                .unwrap();
+            let advisory_data = fs::read_to_string(&advisory_path).map_err(|e| {
+                rustsec::Error::with_source(
+                    rustsec::ErrorKind::Io,
+                    format!("Couldn't open {}", advisory_path.display()),
+                    e,
+                )
+            })?;
 
-            let advisory_parts = Parts::parse(&advisory_data).unwrap();
-            let advisory: Advisory = toml::from_str(advisory_parts.front_matter).unwrap();
-            let date = advisory.metadata.date;
-            let year = date.year();
+            let advisory_parts = Parts::parse(&advisory_data)?;
+            let advisory: Advisory = toml::from_str(advisory_parts.front_matter).map_err(|e| {
+                rustsec::Error::with_source(
+                    rustsec::ErrorKind::Parse,
+                    format!(
+                        "Couldn't parse TOML front matter in {}",
+                        advisory_path.display()
+                    ),
+                    e,
+                )
+            })?;
+
+            let year = advisory.metadata.date.year();
             let new_id = highest_ids.get(&year).cloned().unwrap_or_default() + 1;
             let year_str = year.to_string();
             let string_id = format!("RUSTSEC-{year_str}-{new_id:04}");
-            let new_filename = format!("{string_id}.md");
-            let new_path = dir_path_clone.join(new_filename);
-            let original_file = File::open(&advisory_path).unwrap();
-            let reader = BufReader::new(original_file);
-            let new_file = File::create(new_path).unwrap();
-            let mut writer = LineWriter::new(new_file);
-            for line in reader.lines() {
-                let current_line = line.unwrap();
-                if current_line.contains("id = ") {
-                    writer
-                        .write_all(format!("id = \"{string_id}\"\n").as_ref())
-                        .unwrap();
+            let mut writer =
+                LineWriter::new(File::create(dir_path.join(format!("{string_id}.md")))?);
+
+            let mut id_replaced = false;
+            for line in BufReader::new(File::open(&advisory_path)?).lines() {
+                let current_line = line?;
+                if current_line.trim() == "id = \"RUSTSEC-0000-0000\"" {
+                    writer.write_all(format!("id = \"{string_id}\"\n").as_ref())?;
+                    id_replaced = true;
                 } else {
                     let current_line_with_newline = format!("{current_line}\n");
-                    writer
-                        .write_all(current_line_with_newline.as_ref())
-                        .unwrap();
+                    writer.write_all(current_line_with_newline.as_ref())?;
                 }
             }
+
+            if !id_replaced {
+                return Err(rustsec::Error::new(
+                    rustsec::ErrorKind::Parse,
+                    format!(
+                        "Couldn't find placeholder ID in {}",
+                        advisory_path.display()
+                    ),
+                ));
+            }
+
             highest_ids.insert(year, new_id);
-            fs::remove_file(&advisory_path).unwrap();
+            fs::remove_file(&advisory_path)?;
             if output_mode == OutputMode::HumanReadable {
                 status_ok!("Assignment", "Assigned {} to {}", string_id, dir_name);
             } else {
@@ -173,4 +195,6 @@ fn assign_ids_across_directory(
             }
         }
     }
+
+    Ok(())
 }
