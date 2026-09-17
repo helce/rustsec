@@ -1539,7 +1539,7 @@ pub(crate) const CSKY_UNKNOWN_LINUX_GNUABIV2HF: Platform = Platform {
 pub(crate) const E2K_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1550,7 +1550,7 @@ pub(crate) const E2K_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K12C_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k12c-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1561,7 +1561,7 @@ pub(crate) const E2K12C_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K16C_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k16c-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1572,7 +1572,7 @@ pub(crate) const E2K16C_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K1CPLUS_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k1cplus-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1583,7 +1583,7 @@ pub(crate) const E2K1CPLUS_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K2C3_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k2c3-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1594,7 +1594,7 @@ pub(crate) const E2K2C3_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K48C_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k48c-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1605,7 +1605,7 @@ pub(crate) const E2K48C_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K4C_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k4c-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1616,7 +1616,7 @@ pub(crate) const E2K4C_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K8C_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k8c-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1627,7 +1627,7 @@ pub(crate) const E2K8C_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K8C2_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k8c2-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1638,7 +1638,7 @@ pub(crate) const E2K8C2_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2K8V7_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2k8v7-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1649,7 +1649,7 @@ pub(crate) const E2K8V7_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2KV3_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2kv3-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1660,7 +1660,7 @@ pub(crate) const E2KV3_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2KV4_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2kv4-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1671,7 +1671,7 @@ pub(crate) const E2KV4_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2KV5_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2kv5-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1682,7 +1682,7 @@ pub(crate) const E2KV5_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2KV6_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2kv6-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1693,7 +1693,7 @@ pub(crate) const E2KV6_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const E2KV7_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "e2kv7-unknown-linux-gnu",
     target_arch: Arch::E2k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
