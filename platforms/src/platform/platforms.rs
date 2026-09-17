@@ -10,7 +10,7 @@
 
 use crate::{
     platform::{Platform, Tier},
-    target::{Arch, Endian, Env, PointerWidth, OS},
+    target::{Arch, Endian, Env, Os, PointerWidth},
 };
 
 /// The list of all targets recognized by the Rust compiler
@@ -28,6 +28,7 @@ pub(crate) const ALL: &[Platform] = &[
     AARCH64_KMC_SOLID_ASP3,
     AARCH64_LINUX_ANDROID,
     AARCH64_NINTENDO_SWITCH_FREESTANDING,
+    AARCH64_OE_LINUX_GNU,
     AARCH64_PC_WINDOWS_GNULLVM,
     AARCH64_PC_WINDOWS_MSVC,
     AARCH64_UNKNOWN_FREEBSD,
@@ -39,6 +40,7 @@ pub(crate) const ALL: &[Platform] = &[
     AARCH64_UNKNOWN_LINUX_GNU_ILP32,
     AARCH64_UNKNOWN_LINUX_MUSL,
     AARCH64_UNKNOWN_LINUX_OHOS,
+    AARCH64_UNKNOWN_LINUX_PAUTHTEST,
     AARCH64_UNKNOWN_MANAGARM_MLIBC,
     AARCH64_UNKNOWN_NETBSD,
     AARCH64_UNKNOWN_NONE,
@@ -46,9 +48,9 @@ pub(crate) const ALL: &[Platform] = &[
     AARCH64_UNKNOWN_NTO_QNX700,
     AARCH64_UNKNOWN_NTO_QNX710,
     AARCH64_UNKNOWN_NTO_QNX710_IOSOCK,
-    AARCH64_UNKNOWN_NTO_QNX800,
     AARCH64_UNKNOWN_NUTTX,
     AARCH64_UNKNOWN_OPENBSD,
+    AARCH64_UNKNOWN_QNX,
     AARCH64_UNKNOWN_REDOX,
     AARCH64_UNKNOWN_TEEOS,
     AARCH64_UNKNOWN_TRUSTY,
@@ -89,6 +91,7 @@ pub(crate) const ALL: &[Platform] = &[
     ARMV6_UNKNOWN_NETBSD_EABIHF,
     ARMV6K_NINTENDO_3DS,
     ARMV7_LINUX_ANDROIDEABI,
+    ARMV7_OE_LINUX_GNUEABIHF,
     ARMV7_RTEMS_EABIHF,
     ARMV7_SONY_VITA_NEWLIBEABIHF,
     ARMV7_UNKNOWN_FREEBSD,
@@ -144,6 +147,7 @@ pub(crate) const ALL: &[Platform] = &[
     I586_UNKNOWN_REDOX,
     I686_APPLE_DARWIN,
     I686_LINUX_ANDROID,
+    I686_OE_LINUX_GNU,
     I686_PC_NTO_QNX700,
     I686_PC_WINDOWS_GNU,
     I686_PC_WINDOWS_GNULLVM,
@@ -235,6 +239,7 @@ pub(crate) const ALL: &[Platform] = &[
     RISCV32IMC_UNKNOWN_NONE_ELF,
     RISCV32IMC_UNKNOWN_NUTTX_ELF,
     RISCV64_LINUX_ANDROID,
+    RISCV64_OE_LINUX_GNU,
     RISCV64_WRS_VXWORKS,
     RISCV64A23_UNKNOWN_LINUX_GNU,
     RISCV64GC_UNKNOWN_FREEBSD,
@@ -307,10 +312,11 @@ pub(crate) const ALL: &[Platform] = &[
     X86_64_FORTANIX_UNKNOWN_SGX,
     X86_64_LINUX_ANDROID,
     X86_64_LYNX_LYNXOS178,
+    X86_64_OE_LINUX_GNU,
     X86_64_PC_CYGWIN,
     X86_64_PC_NTO_QNX710,
     X86_64_PC_NTO_QNX710_IOSOCK,
-    X86_64_PC_NTO_QNX800,
+    X86_64_PC_QNX,
     X86_64_PC_SOLARIS,
     X86_64_PC_WINDOWS_GNU,
     X86_64_PC_WINDOWS_GNULLVM,
@@ -359,7 +365,7 @@ pub(crate) const ALL: &[Platform] = &[
 pub(crate) const AARCH64_APPLE_DARWIN: Platform = Platform {
     target_triple: "aarch64-apple-darwin",
     target_arch: Arch::AArch64,
-    target_os: OS::MacOS,
+    target_os: Os::MacOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -370,7 +376,7 @@ pub(crate) const AARCH64_APPLE_DARWIN: Platform = Platform {
 pub(crate) const AARCH64_APPLE_IOS: Platform = Platform {
     target_triple: "aarch64-apple-ios",
     target_arch: Arch::AArch64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -381,7 +387,7 @@ pub(crate) const AARCH64_APPLE_IOS: Platform = Platform {
 pub(crate) const AARCH64_APPLE_IOS_MACABI: Platform = Platform {
     target_triple: "aarch64-apple-ios-macabi",
     target_arch: Arch::AArch64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::Macabi,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -392,7 +398,7 @@ pub(crate) const AARCH64_APPLE_IOS_MACABI: Platform = Platform {
 pub(crate) const AARCH64_APPLE_IOS_SIM: Platform = Platform {
     target_triple: "aarch64-apple-ios-sim",
     target_arch: Arch::AArch64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -403,7 +409,7 @@ pub(crate) const AARCH64_APPLE_IOS_SIM: Platform = Platform {
 pub(crate) const AARCH64_APPLE_TVOS: Platform = Platform {
     target_triple: "aarch64-apple-tvos",
     target_arch: Arch::AArch64,
-    target_os: OS::TvOS,
+    target_os: Os::TvOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -414,7 +420,7 @@ pub(crate) const AARCH64_APPLE_TVOS: Platform = Platform {
 pub(crate) const AARCH64_APPLE_TVOS_SIM: Platform = Platform {
     target_triple: "aarch64-apple-tvos-sim",
     target_arch: Arch::AArch64,
-    target_os: OS::TvOS,
+    target_os: Os::TvOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -425,7 +431,7 @@ pub(crate) const AARCH64_APPLE_TVOS_SIM: Platform = Platform {
 pub(crate) const AARCH64_APPLE_VISIONOS: Platform = Platform {
     target_triple: "aarch64-apple-visionos",
     target_arch: Arch::AArch64,
-    target_os: OS::VisionOS,
+    target_os: Os::VisionOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -436,7 +442,7 @@ pub(crate) const AARCH64_APPLE_VISIONOS: Platform = Platform {
 pub(crate) const AARCH64_APPLE_VISIONOS_SIM: Platform = Platform {
     target_triple: "aarch64-apple-visionos-sim",
     target_arch: Arch::AArch64,
-    target_os: OS::VisionOS,
+    target_os: Os::VisionOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -447,7 +453,7 @@ pub(crate) const AARCH64_APPLE_VISIONOS_SIM: Platform = Platform {
 pub(crate) const AARCH64_APPLE_WATCHOS: Platform = Platform {
     target_triple: "aarch64-apple-watchos",
     target_arch: Arch::AArch64,
-    target_os: OS::WatchOS,
+    target_os: Os::WatchOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -458,7 +464,7 @@ pub(crate) const AARCH64_APPLE_WATCHOS: Platform = Platform {
 pub(crate) const AARCH64_APPLE_WATCHOS_SIM: Platform = Platform {
     target_triple: "aarch64-apple-watchos-sim",
     target_arch: Arch::AArch64,
-    target_os: OS::WatchOS,
+    target_os: Os::WatchOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -469,7 +475,7 @@ pub(crate) const AARCH64_APPLE_WATCHOS_SIM: Platform = Platform {
 pub(crate) const AARCH64_KMC_SOLID_ASP3: Platform = Platform {
     target_triple: "aarch64-kmc-solid_asp3",
     target_arch: Arch::AArch64,
-    target_os: OS::SolidAsp3,
+    target_os: Os::SolidAsp3,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -480,7 +486,7 @@ pub(crate) const AARCH64_KMC_SOLID_ASP3: Platform = Platform {
 pub(crate) const AARCH64_LINUX_ANDROID: Platform = Platform {
     target_triple: "aarch64-linux-android",
     target_arch: Arch::AArch64,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -491,8 +497,19 @@ pub(crate) const AARCH64_LINUX_ANDROID: Platform = Platform {
 pub(crate) const AARCH64_NINTENDO_SWITCH_FREESTANDING: Platform = Platform {
     target_triple: "aarch64-nintendo-switch-freestanding",
     target_arch: Arch::AArch64,
-    target_os: OS::Horizon,
+    target_os: Os::Horizon,
     target_env: Env::None,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
+};
+
+/// ARM64 OpenEmbedded/Yocto Linux (GNU)
+pub(crate) const AARCH64_OE_LINUX_GNU: Platform = Platform {
+    target_triple: "aarch64-oe-linux-gnu",
+    target_arch: Arch::AArch64,
+    target_os: Os::Linux,
+    target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
@@ -502,7 +519,7 @@ pub(crate) const AARCH64_NINTENDO_SWITCH_FREESTANDING: Platform = Platform {
 pub(crate) const AARCH64_PC_WINDOWS_GNULLVM: Platform = Platform {
     target_triple: "aarch64-pc-windows-gnullvm",
     target_arch: Arch::AArch64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -513,7 +530,7 @@ pub(crate) const AARCH64_PC_WINDOWS_GNULLVM: Platform = Platform {
 pub(crate) const AARCH64_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "aarch64-pc-windows-msvc",
     target_arch: Arch::AArch64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -524,7 +541,7 @@ pub(crate) const AARCH64_PC_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "aarch64-unknown-freebsd",
     target_arch: Arch::AArch64,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -535,7 +552,7 @@ pub(crate) const AARCH64_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_FUCHSIA: Platform = Platform {
     target_triple: "aarch64-unknown-fuchsia",
     target_arch: Arch::AArch64,
-    target_os: OS::Fuchsia,
+    target_os: Os::Fuchsia,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -546,7 +563,7 @@ pub(crate) const AARCH64_UNKNOWN_FUCHSIA: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_HELENOS: Platform = Platform {
     target_triple: "aarch64-unknown-helenos",
     target_arch: Arch::AArch64,
-    target_os: OS::HelenOS,
+    target_os: Os::HelenOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -557,7 +574,7 @@ pub(crate) const AARCH64_UNKNOWN_HELENOS: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_HERMIT: Platform = Platform {
     target_triple: "aarch64-unknown-hermit",
     target_arch: Arch::AArch64,
-    target_os: OS::Hermit,
+    target_os: Os::Hermit,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -568,7 +585,7 @@ pub(crate) const AARCH64_UNKNOWN_HERMIT: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_ILLUMOS: Platform = Platform {
     target_triple: "aarch64-unknown-illumos",
     target_arch: Arch::AArch64,
-    target_os: OS::IllumOS,
+    target_os: Os::IllumOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -579,7 +596,7 @@ pub(crate) const AARCH64_UNKNOWN_ILLUMOS: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "aarch64-unknown-linux-gnu",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -590,7 +607,7 @@ pub(crate) const AARCH64_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_LINUX_GNU_ILP32: Platform = Platform {
     target_triple: "aarch64-unknown-linux-gnu_ilp32",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -601,7 +618,7 @@ pub(crate) const AARCH64_UNKNOWN_LINUX_GNU_ILP32: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "aarch64-unknown-linux-musl",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -612,18 +629,29 @@ pub(crate) const AARCH64_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_LINUX_OHOS: Platform = Platform {
     target_triple: "aarch64-unknown-linux-ohos",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::OhOS,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Two,
 };
 
+/// ARM64 PAC ELF ABI
+pub(crate) const AARCH64_UNKNOWN_LINUX_PAUTHTEST: Platform = Platform {
+    target_triple: "aarch64-unknown-linux-pauthtest",
+    target_arch: Arch::AArch64,
+    target_os: Os::Linux,
+    target_env: Env::Musl,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
+};
+
 /// ARM64 Managarm
 pub(crate) const AARCH64_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
     target_triple: "aarch64-unknown-managarm-mlibc",
     target_arch: Arch::AArch64,
-    target_os: OS::Managarm,
+    target_os: Os::Managarm,
     target_env: Env::Mlibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -634,7 +662,7 @@ pub(crate) const AARCH64_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "aarch64-unknown-netbsd",
     target_arch: Arch::AArch64,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -645,7 +673,7 @@ pub(crate) const AARCH64_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NONE: Platform = Platform {
     target_triple: "aarch64-unknown-none",
     target_arch: Arch::AArch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -656,7 +684,7 @@ pub(crate) const AARCH64_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "aarch64-unknown-none-softfloat",
     target_arch: Arch::AArch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -667,7 +695,7 @@ pub(crate) const AARCH64_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX700: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx700",
     target_arch: Arch::AArch64,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto70,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -678,7 +706,7 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX700: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX710: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx710",
     target_arch: Arch::AArch64,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto71,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -689,19 +717,8 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX710: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX710_IOSOCK: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx710_iosock",
     target_arch: Arch::AArch64,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto71Iosock,
-    target_endian: Endian::Little,
-    target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
-};
-
-/// ARM64 QNX Neutrino 8.0 RTOS
-pub(crate) const AARCH64_UNKNOWN_NTO_QNX800: Platform = Platform {
-    target_triple: "aarch64-unknown-nto-qnx800",
-    target_arch: Arch::AArch64,
-    target_os: OS::Nto,
-    target_env: Env::Nto80,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
@@ -711,7 +728,7 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX800: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_NUTTX: Platform = Platform {
     target_triple: "aarch64-unknown-nuttx",
     target_arch: Arch::AArch64,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -722,7 +739,18 @@ pub(crate) const AARCH64_UNKNOWN_NUTTX: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "aarch64-unknown-openbsd",
     target_arch: Arch::AArch64,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
+    target_env: Env::None,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
+};
+
+/// ARM64 QNX SDP 8.0+
+pub(crate) const AARCH64_UNKNOWN_QNX: Platform = Platform {
+    target_triple: "aarch64-unknown-qnx",
+    target_arch: Arch::AArch64,
+    target_os: Os::Qnx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -733,7 +761,7 @@ pub(crate) const AARCH64_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_REDOX: Platform = Platform {
     target_triple: "aarch64-unknown-redox",
     target_arch: Arch::AArch64,
-    target_os: OS::Redox,
+    target_os: Os::Redox,
     target_env: Env::Relibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -744,7 +772,7 @@ pub(crate) const AARCH64_UNKNOWN_REDOX: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_TEEOS: Platform = Platform {
     target_triple: "aarch64-unknown-teeos",
     target_arch: Arch::AArch64,
-    target_os: OS::TeeOS,
+    target_os: Os::TeeOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -754,7 +782,7 @@ pub(crate) const AARCH64_UNKNOWN_TEEOS: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_TRUSTY: Platform = Platform {
     target_triple: "aarch64-unknown-trusty",
     target_arch: Arch::AArch64,
-    target_os: OS::Trusty,
+    target_os: Os::Trusty,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -765,7 +793,7 @@ pub(crate) const AARCH64_UNKNOWN_TRUSTY: Platform = Platform {
 pub(crate) const AARCH64_UNKNOWN_UEFI: Platform = Platform {
     target_triple: "aarch64-unknown-uefi",
     target_arch: Arch::AArch64,
-    target_os: OS::Uefi,
+    target_os: Os::Uefi,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -775,7 +803,7 @@ pub(crate) const AARCH64_UNKNOWN_UEFI: Platform = Platform {
 pub(crate) const AARCH64_UWP_WINDOWS_MSVC: Platform = Platform {
     target_triple: "aarch64-uwp-windows-msvc",
     target_arch: Arch::AArch64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -786,7 +814,7 @@ pub(crate) const AARCH64_UWP_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const AARCH64_WRS_VXWORKS: Platform = Platform {
     target_triple: "aarch64-wrs-vxworks",
     target_arch: Arch::AArch64,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -797,7 +825,7 @@ pub(crate) const AARCH64_WRS_VXWORKS: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_HERMIT: Platform = Platform {
     target_triple: "aarch64_be-unknown-hermit",
     target_arch: Arch::AArch64,
-    target_os: OS::Hermit,
+    target_os: Os::Hermit,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -808,7 +836,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_HERMIT: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "aarch64_be-unknown-linux-gnu",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -819,7 +847,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_LINUX_GNU_ILP32: Platform = Platform {
     target_triple: "aarch64_be-unknown-linux-gnu_ilp32",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -830,7 +858,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_LINUX_GNU_ILP32: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "aarch64_be-unknown-linux-musl",
     target_arch: Arch::AArch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -841,7 +869,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "aarch64_be-unknown-netbsd",
     target_arch: Arch::AArch64,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -852,7 +880,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const AARCH64_BE_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "aarch64_be-unknown-none-softfloat",
     target_arch: Arch::AArch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -863,7 +891,7 @@ pub(crate) const AARCH64_BE_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const AARCH64V8R_UNKNOWN_NONE: Platform = Platform {
     target_triple: "aarch64v8r-unknown-none",
     target_arch: Arch::AArch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -874,7 +902,7 @@ pub(crate) const AARCH64V8R_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const AARCH64V8R_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "aarch64v8r-unknown-none-softfloat",
     target_arch: Arch::AArch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -885,7 +913,7 @@ pub(crate) const AARCH64V8R_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const AMDGCN_AMD_AMDHSA: Platform = Platform {
     target_triple: "amdgcn-amd-amdhsa",
     target_arch: Arch::Amdgpu,
-    target_os: OS::Amdhsa,
+    target_os: Os::Amdhsa,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -896,7 +924,7 @@ pub(crate) const AMDGCN_AMD_AMDHSA: Platform = Platform {
 pub(crate) const ARM_LINUX_ANDROIDEABI: Platform = Platform {
     target_triple: "arm-linux-androideabi",
     target_arch: Arch::Arm,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -907,7 +935,7 @@ pub(crate) const ARM_LINUX_ANDROIDEABI: Platform = Platform {
 pub(crate) const ARM_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
     target_triple: "arm-unknown-linux-gnueabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -918,7 +946,7 @@ pub(crate) const ARM_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
 pub(crate) const ARM_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
     target_triple: "arm-unknown-linux-gnueabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -929,7 +957,7 @@ pub(crate) const ARM_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
 pub(crate) const ARM_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
     target_triple: "arm-unknown-linux-musleabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -940,7 +968,7 @@ pub(crate) const ARM_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
 pub(crate) const ARM_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
     target_triple: "arm-unknown-linux-musleabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -951,7 +979,7 @@ pub(crate) const ARM_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
 pub(crate) const ARM64_32_APPLE_WATCHOS: Platform = Platform {
     target_triple: "arm64_32-apple-watchos",
     target_arch: Arch::AArch64,
-    target_os: OS::WatchOS,
+    target_os: Os::WatchOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -962,7 +990,7 @@ pub(crate) const ARM64_32_APPLE_WATCHOS: Platform = Platform {
 pub(crate) const ARM64E_APPLE_DARWIN: Platform = Platform {
     target_triple: "arm64e-apple-darwin",
     target_arch: Arch::AArch64,
-    target_os: OS::MacOS,
+    target_os: Os::MacOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -973,7 +1001,7 @@ pub(crate) const ARM64E_APPLE_DARWIN: Platform = Platform {
 pub(crate) const ARM64E_APPLE_IOS: Platform = Platform {
     target_triple: "arm64e-apple-ios",
     target_arch: Arch::AArch64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -984,7 +1012,7 @@ pub(crate) const ARM64E_APPLE_IOS: Platform = Platform {
 pub(crate) const ARM64E_APPLE_TVOS: Platform = Platform {
     target_triple: "arm64e-apple-tvos",
     target_arch: Arch::AArch64,
-    target_os: OS::TvOS,
+    target_os: Os::TvOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -995,7 +1023,7 @@ pub(crate) const ARM64E_APPLE_TVOS: Platform = Platform {
 pub(crate) const ARM64EC_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "arm64ec-pc-windows-msvc",
     target_arch: Arch::Arm64ec,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1006,7 +1034,7 @@ pub(crate) const ARM64EC_PC_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const ARMEB_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
     target_triple: "armeb-unknown-linux-gnueabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -1017,7 +1045,7 @@ pub(crate) const ARMEB_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
 pub(crate) const ARMEBV7R_NONE_EABI: Platform = Platform {
     target_triple: "armebv7r-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -1028,7 +1056,7 @@ pub(crate) const ARMEBV7R_NONE_EABI: Platform = Platform {
 pub(crate) const ARMEBV7R_NONE_EABIHF: Platform = Platform {
     target_triple: "armebv7r-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -1039,7 +1067,7 @@ pub(crate) const ARMEBV7R_NONE_EABIHF: Platform = Platform {
 pub(crate) const ARMV4T_NONE_EABI: Platform = Platform {
     target_triple: "armv4t-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1050,7 +1078,7 @@ pub(crate) const ARMV4T_NONE_EABI: Platform = Platform {
 pub(crate) const ARMV4T_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
     target_triple: "armv4t-unknown-linux-gnueabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1061,7 +1089,7 @@ pub(crate) const ARMV4T_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
 pub(crate) const ARMV5TE_NONE_EABI: Platform = Platform {
     target_triple: "armv5te-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1072,7 +1100,7 @@ pub(crate) const ARMV5TE_NONE_EABI: Platform = Platform {
 pub(crate) const ARMV5TE_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
     target_triple: "armv5te-unknown-linux-gnueabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1083,7 +1111,7 @@ pub(crate) const ARMV5TE_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
 pub(crate) const ARMV5TE_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
     target_triple: "armv5te-unknown-linux-musleabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1094,7 +1122,7 @@ pub(crate) const ARMV5TE_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
 pub(crate) const ARMV5TE_UNKNOWN_LINUX_UCLIBCEABI: Platform = Platform {
     target_triple: "armv5te-unknown-linux-uclibceabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::UClibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1105,7 +1133,7 @@ pub(crate) const ARMV5TE_UNKNOWN_LINUX_UCLIBCEABI: Platform = Platform {
 pub(crate) const ARMV6_NONE_EABI: Platform = Platform {
     target_triple: "armv6-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1116,7 +1144,7 @@ pub(crate) const ARMV6_NONE_EABI: Platform = Platform {
 pub(crate) const ARMV6_NONE_EABIHF: Platform = Platform {
     target_triple: "armv6-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1127,7 +1155,7 @@ pub(crate) const ARMV6_NONE_EABIHF: Platform = Platform {
 pub(crate) const ARMV6_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "armv6-unknown-freebsd",
     target_arch: Arch::Arm,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1138,7 +1166,7 @@ pub(crate) const ARMV6_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const ARMV6_UNKNOWN_NETBSD_EABIHF: Platform = Platform {
     target_triple: "armv6-unknown-netbsd-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1149,7 +1177,7 @@ pub(crate) const ARMV6_UNKNOWN_NETBSD_EABIHF: Platform = Platform {
 pub(crate) const ARMV6K_NINTENDO_3DS: Platform = Platform {
     target_triple: "armv6k-nintendo-3ds",
     target_arch: Arch::Arm,
-    target_os: OS::Horizon,
+    target_os: Os::Horizon,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1160,18 +1188,29 @@ pub(crate) const ARMV6K_NINTENDO_3DS: Platform = Platform {
 pub(crate) const ARMV7_LINUX_ANDROIDEABI: Platform = Platform {
     target_triple: "armv7-linux-androideabi",
     target_arch: Arch::Arm,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
     tier: Tier::Two,
 };
 
+/// ARMv7 OpenEmbedded/Yocto Linux (GNU)
+pub(crate) const ARMV7_OE_LINUX_GNUEABIHF: Platform = Platform {
+    target_triple: "armv7-oe-linux-gnueabihf",
+    target_arch: Arch::Arm,
+    target_os: Os::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U32,
+    tier: Tier::Three,
+};
+
 /// RTEMS OS for ARM BSPs
 pub(crate) const ARMV7_RTEMS_EABIHF: Platform = Platform {
     target_triple: "armv7-rtems-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Rtems,
+    target_os: Os::Rtems,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1182,7 +1221,7 @@ pub(crate) const ARMV7_RTEMS_EABIHF: Platform = Platform {
 pub(crate) const ARMV7_SONY_VITA_NEWLIBEABIHF: Platform = Platform {
     target_triple: "armv7-sony-vita-newlibeabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Vita,
+    target_os: Os::Vita,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1193,7 +1232,7 @@ pub(crate) const ARMV7_SONY_VITA_NEWLIBEABIHF: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "armv7-unknown-freebsd",
     target_arch: Arch::Arm,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1204,7 +1243,7 @@ pub(crate) const ARMV7_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
     target_triple: "armv7-unknown-linux-gnueabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1215,7 +1254,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_GNUEABI: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
     target_triple: "armv7-unknown-linux-gnueabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1226,7 +1265,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
     target_triple: "armv7-unknown-linux-musleabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1237,7 +1276,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_MUSLEABI: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
     target_triple: "armv7-unknown-linux-musleabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1248,7 +1287,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_OHOS: Platform = Platform {
     target_triple: "armv7-unknown-linux-ohos",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::OhOS,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1259,7 +1298,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_OHOS: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_UCLIBCEABI: Platform = Platform {
     target_triple: "armv7-unknown-linux-uclibceabi",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::UClibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1270,7 +1309,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_UCLIBCEABI: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF: Platform = Platform {
     target_triple: "armv7-unknown-linux-uclibceabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::UClibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1281,7 +1320,7 @@ pub(crate) const ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_NETBSD_EABIHF: Platform = Platform {
     target_triple: "armv7-unknown-netbsd-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1291,7 +1330,7 @@ pub(crate) const ARMV7_UNKNOWN_NETBSD_EABIHF: Platform = Platform {
 pub(crate) const ARMV7_UNKNOWN_TRUSTY: Platform = Platform {
     target_triple: "armv7-unknown-trusty",
     target_arch: Arch::Arm,
-    target_os: OS::Trusty,
+    target_os: Os::Trusty,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1302,7 +1341,7 @@ pub(crate) const ARMV7_UNKNOWN_TRUSTY: Platform = Platform {
 pub(crate) const ARMV7_WRS_VXWORKS_EABIHF: Platform = Platform {
     target_triple: "armv7-wrs-vxworks-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1313,7 +1352,7 @@ pub(crate) const ARMV7_WRS_VXWORKS_EABIHF: Platform = Platform {
 pub(crate) const ARMV7A_KMC_SOLID_ASP3_EABI: Platform = Platform {
     target_triple: "armv7a-kmc-solid_asp3-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::SolidAsp3,
+    target_os: Os::SolidAsp3,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1324,7 +1363,7 @@ pub(crate) const ARMV7A_KMC_SOLID_ASP3_EABI: Platform = Platform {
 pub(crate) const ARMV7A_KMC_SOLID_ASP3_EABIHF: Platform = Platform {
     target_triple: "armv7a-kmc-solid_asp3-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::SolidAsp3,
+    target_os: Os::SolidAsp3,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1335,7 +1374,7 @@ pub(crate) const ARMV7A_KMC_SOLID_ASP3_EABIHF: Platform = Platform {
 pub(crate) const ARMV7A_NONE_EABI: Platform = Platform {
     target_triple: "armv7a-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1346,7 +1385,7 @@ pub(crate) const ARMV7A_NONE_EABI: Platform = Platform {
 pub(crate) const ARMV7A_NONE_EABIHF: Platform = Platform {
     target_triple: "armv7a-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1357,7 +1396,7 @@ pub(crate) const ARMV7A_NONE_EABIHF: Platform = Platform {
 pub(crate) const ARMV7A_NUTTX_EABI: Platform = Platform {
     target_triple: "armv7a-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1368,7 +1407,7 @@ pub(crate) const ARMV7A_NUTTX_EABI: Platform = Platform {
 pub(crate) const ARMV7A_NUTTX_EABIHF: Platform = Platform {
     target_triple: "armv7a-nuttx-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1379,7 +1418,7 @@ pub(crate) const ARMV7A_NUTTX_EABIHF: Platform = Platform {
 pub(crate) const ARMV7A_VEX_V5: Platform = Platform {
     target_triple: "armv7a-vex-v5",
     target_arch: Arch::Arm,
-    target_os: OS::VexOS,
+    target_os: Os::VexOS,
     target_env: Env::V5,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1390,7 +1429,7 @@ pub(crate) const ARMV7A_VEX_V5: Platform = Platform {
 pub(crate) const ARMV7K_APPLE_WATCHOS: Platform = Platform {
     target_triple: "armv7k-apple-watchos",
     target_arch: Arch::Arm,
-    target_os: OS::WatchOS,
+    target_os: Os::WatchOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1401,7 +1440,7 @@ pub(crate) const ARMV7K_APPLE_WATCHOS: Platform = Platform {
 pub(crate) const ARMV7R_NONE_EABI: Platform = Platform {
     target_triple: "armv7r-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1412,7 +1451,7 @@ pub(crate) const ARMV7R_NONE_EABI: Platform = Platform {
 pub(crate) const ARMV7R_NONE_EABIHF: Platform = Platform {
     target_triple: "armv7r-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1423,7 +1462,7 @@ pub(crate) const ARMV7R_NONE_EABIHF: Platform = Platform {
 pub(crate) const ARMV7S_APPLE_IOS: Platform = Platform {
     target_triple: "armv7s-apple-ios",
     target_arch: Arch::Arm,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1434,7 +1473,7 @@ pub(crate) const ARMV7S_APPLE_IOS: Platform = Platform {
 pub(crate) const ARMV8R_NONE_EABIHF: Platform = Platform {
     target_triple: "armv8r-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1445,7 +1484,7 @@ pub(crate) const ARMV8R_NONE_EABIHF: Platform = Platform {
 pub(crate) const AVR_NONE: Platform = Platform {
     target_triple: "avr-none",
     target_arch: Arch::Avr,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U16,
@@ -1456,7 +1495,7 @@ pub(crate) const AVR_NONE: Platform = Platform {
 pub(crate) const BPFEB_UNKNOWN_NONE: Platform = Platform {
     target_triple: "bpfeb-unknown-none",
     target_arch: Arch::Bpf,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -1467,7 +1506,7 @@ pub(crate) const BPFEB_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const BPFEL_UNKNOWN_NONE: Platform = Platform {
     target_triple: "bpfel-unknown-none",
     target_arch: Arch::Bpf,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -1478,7 +1517,7 @@ pub(crate) const BPFEL_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const CSKY_UNKNOWN_LINUX_GNUABIV2: Platform = Platform {
     target_triple: "csky-unknown-linux-gnuabiv2",
     target_arch: Arch::Csky,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1489,7 +1528,7 @@ pub(crate) const CSKY_UNKNOWN_LINUX_GNUABIV2: Platform = Platform {
 pub(crate) const CSKY_UNKNOWN_LINUX_GNUABIV2HF: Platform = Platform {
     target_triple: "csky-unknown-linux-gnuabiv2hf",
     target_arch: Arch::Csky,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1665,7 +1704,7 @@ pub(crate) const E2KV7_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const HEXAGON_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "hexagon-unknown-linux-musl",
     target_arch: Arch::Hexagon,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1676,7 +1715,7 @@ pub(crate) const HEXAGON_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const HEXAGON_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "hexagon-unknown-none-elf",
     target_arch: Arch::Hexagon,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1687,7 +1726,7 @@ pub(crate) const HEXAGON_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const HEXAGON_UNKNOWN_QURT: Platform = Platform {
     target_triple: "hexagon-unknown-qurt",
     target_arch: Arch::Hexagon,
-    target_os: OS::Qurt,
+    target_os: Os::Qurt,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1698,7 +1737,7 @@ pub(crate) const HEXAGON_UNKNOWN_QURT: Platform = Platform {
 pub(crate) const I386_APPLE_IOS: Platform = Platform {
     target_triple: "i386-apple-ios",
     target_arch: Arch::X86,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1709,7 +1748,7 @@ pub(crate) const I386_APPLE_IOS: Platform = Platform {
 pub(crate) const I586_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "i586-unknown-linux-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1720,7 +1759,7 @@ pub(crate) const I586_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const I586_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "i586-unknown-linux-musl",
     target_arch: Arch::X86,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1731,7 +1770,7 @@ pub(crate) const I586_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const I586_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "i586-unknown-netbsd",
     target_arch: Arch::X86,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1742,7 +1781,7 @@ pub(crate) const I586_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const I586_UNKNOWN_REDOX: Platform = Platform {
     target_triple: "i586-unknown-redox",
     target_arch: Arch::X86,
-    target_os: OS::Redox,
+    target_os: Os::Redox,
     target_env: Env::Relibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1753,7 +1792,7 @@ pub(crate) const I586_UNKNOWN_REDOX: Platform = Platform {
 pub(crate) const I686_APPLE_DARWIN: Platform = Platform {
     target_triple: "i686-apple-darwin",
     target_arch: Arch::X86,
-    target_os: OS::MacOS,
+    target_os: Os::MacOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1764,18 +1803,29 @@ pub(crate) const I686_APPLE_DARWIN: Platform = Platform {
 pub(crate) const I686_LINUX_ANDROID: Platform = Platform {
     target_triple: "i686-linux-android",
     target_arch: Arch::X86,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
     tier: Tier::Two,
 };
 
+/// 32-bit x86 OpenEmbedded/Yocto Linux (GNU)
+pub(crate) const I686_OE_LINUX_GNU: Platform = Platform {
+    target_triple: "i686-oe-linux-gnu",
+    target_arch: Arch::X86,
+    target_os: Os::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U32,
+    tier: Tier::Three,
+};
+
 /// 32-bit x86 QNX Neutrino 7.0 RTOS (Pentium 4)
 pub(crate) const I686_PC_NTO_QNX700: Platform = Platform {
     target_triple: "i686-pc-nto-qnx700",
     target_arch: Arch::X86,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto70,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1786,7 +1836,7 @@ pub(crate) const I686_PC_NTO_QNX700: Platform = Platform {
 pub(crate) const I686_PC_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-pc-windows-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1797,7 +1847,7 @@ pub(crate) const I686_PC_WINDOWS_GNU: Platform = Platform {
 pub(crate) const I686_PC_WINDOWS_GNULLVM: Platform = Platform {
     target_triple: "i686-pc-windows-gnullvm",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1808,7 +1858,7 @@ pub(crate) const I686_PC_WINDOWS_GNULLVM: Platform = Platform {
 pub(crate) const I686_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-pc-windows-msvc",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1819,7 +1869,7 @@ pub(crate) const I686_PC_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const I686_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "i686-unknown-freebsd",
     target_arch: Arch::X86,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1830,7 +1880,7 @@ pub(crate) const I686_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const I686_UNKNOWN_HAIKU: Platform = Platform {
     target_triple: "i686-unknown-haiku",
     target_arch: Arch::X86,
-    target_os: OS::Haiku,
+    target_os: Os::Haiku,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1841,7 +1891,7 @@ pub(crate) const I686_UNKNOWN_HAIKU: Platform = Platform {
 pub(crate) const I686_UNKNOWN_HELENOS: Platform = Platform {
     target_triple: "i686-unknown-helenos",
     target_arch: Arch::X86,
-    target_os: OS::HelenOS,
+    target_os: Os::HelenOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1852,7 +1902,7 @@ pub(crate) const I686_UNKNOWN_HELENOS: Platform = Platform {
 pub(crate) const I686_UNKNOWN_HURD_GNU: Platform = Platform {
     target_triple: "i686-unknown-hurd-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Hurd,
+    target_os: Os::Hurd,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1863,7 +1913,7 @@ pub(crate) const I686_UNKNOWN_HURD_GNU: Platform = Platform {
 pub(crate) const I686_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "i686-unknown-linux-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1874,7 +1924,7 @@ pub(crate) const I686_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const I686_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "i686-unknown-linux-musl",
     target_arch: Arch::X86,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1885,7 +1935,7 @@ pub(crate) const I686_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const I686_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "i686-unknown-netbsd",
     target_arch: Arch::X86,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1896,7 +1946,7 @@ pub(crate) const I686_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const I686_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "i686-unknown-openbsd",
     target_arch: Arch::X86,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1907,7 +1957,7 @@ pub(crate) const I686_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const I686_UNKNOWN_UEFI: Platform = Platform {
     target_triple: "i686-unknown-uefi",
     target_arch: Arch::X86,
-    target_os: OS::Uefi,
+    target_os: Os::Uefi,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1917,7 +1967,7 @@ pub(crate) const I686_UNKNOWN_UEFI: Platform = Platform {
 pub(crate) const I686_UWP_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-uwp-windows-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1927,7 +1977,7 @@ pub(crate) const I686_UWP_WINDOWS_GNU: Platform = Platform {
 pub(crate) const I686_UWP_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-uwp-windows-msvc",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1938,7 +1988,7 @@ pub(crate) const I686_UWP_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const I686_WIN7_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-win7-windows-gnu",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1949,7 +1999,7 @@ pub(crate) const I686_WIN7_WINDOWS_GNU: Platform = Platform {
 pub(crate) const I686_WIN7_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-win7-windows-msvc",
     target_arch: Arch::X86,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1959,7 +2009,7 @@ pub(crate) const I686_WIN7_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const I686_WRS_VXWORKS: Platform = Platform {
     target_triple: "i686-wrs-vxworks",
     target_arch: Arch::X86,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1970,7 +2020,7 @@ pub(crate) const I686_WRS_VXWORKS: Platform = Platform {
 pub(crate) const LOONGARCH32_UNKNOWN_NONE: Platform = Platform {
     target_triple: "loongarch32-unknown-none",
     target_arch: Arch::Loongarch32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1981,7 +2031,7 @@ pub(crate) const LOONGARCH32_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const LOONGARCH32_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "loongarch32-unknown-none-softfloat",
     target_arch: Arch::Loongarch32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -1992,7 +2042,7 @@ pub(crate) const LOONGARCH32_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const LOONGARCH64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "loongarch64-unknown-linux-gnu",
     target_arch: Arch::Loongarch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2003,7 +2053,7 @@ pub(crate) const LOONGARCH64_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const LOONGARCH64_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "loongarch64-unknown-linux-musl",
     target_arch: Arch::Loongarch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2014,7 +2064,7 @@ pub(crate) const LOONGARCH64_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const LOONGARCH64_UNKNOWN_LINUX_OHOS: Platform = Platform {
     target_triple: "loongarch64-unknown-linux-ohos",
     target_arch: Arch::Loongarch64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::OhOS,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2025,7 +2075,7 @@ pub(crate) const LOONGARCH64_UNKNOWN_LINUX_OHOS: Platform = Platform {
 pub(crate) const LOONGARCH64_UNKNOWN_NONE: Platform = Platform {
     target_triple: "loongarch64-unknown-none",
     target_arch: Arch::Loongarch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2036,7 +2086,7 @@ pub(crate) const LOONGARCH64_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const LOONGARCH64_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "loongarch64-unknown-none-softfloat",
     target_arch: Arch::Loongarch64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2047,7 +2097,7 @@ pub(crate) const LOONGARCH64_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const M68K_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "m68k-unknown-linux-gnu",
     target_arch: Arch::M68k,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2058,7 +2108,7 @@ pub(crate) const M68K_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const M68K_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "m68k-unknown-none-elf",
     target_arch: Arch::M68k,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2069,7 +2119,7 @@ pub(crate) const M68K_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const MIPS_MTI_NONE_ELF: Platform = Platform {
     target_triple: "mips-mti-none-elf",
     target_arch: Arch::Mips,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2080,7 +2130,7 @@ pub(crate) const MIPS_MTI_NONE_ELF: Platform = Platform {
 pub(crate) const MIPS_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "mips-unknown-linux-gnu",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2091,7 +2141,7 @@ pub(crate) const MIPS_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const MIPS_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "mips-unknown-linux-musl",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2102,7 +2152,7 @@ pub(crate) const MIPS_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const MIPS_UNKNOWN_LINUX_UCLIBC: Platform = Platform {
     target_triple: "mips-unknown-linux-uclibc",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::UClibc,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2113,7 +2163,7 @@ pub(crate) const MIPS_UNKNOWN_LINUX_UCLIBC: Platform = Platform {
 pub(crate) const MIPS64_OPENWRT_LINUX_MUSL: Platform = Platform {
     target_triple: "mips64-openwrt-linux-musl",
     target_arch: Arch::Mips64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2124,7 +2174,7 @@ pub(crate) const MIPS64_OPENWRT_LINUX_MUSL: Platform = Platform {
 pub(crate) const MIPS64_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
     target_triple: "mips64-unknown-linux-gnuabi64",
     target_arch: Arch::Mips64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2135,7 +2185,7 @@ pub(crate) const MIPS64_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
 pub(crate) const MIPS64_UNKNOWN_LINUX_MUSLABI64: Platform = Platform {
     target_triple: "mips64-unknown-linux-muslabi64",
     target_arch: Arch::Mips64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2146,7 +2196,7 @@ pub(crate) const MIPS64_UNKNOWN_LINUX_MUSLABI64: Platform = Platform {
 pub(crate) const MIPS64EL_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
     target_triple: "mips64el-unknown-linux-gnuabi64",
     target_arch: Arch::Mips64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2157,7 +2207,7 @@ pub(crate) const MIPS64EL_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
 pub(crate) const MIPS64EL_UNKNOWN_LINUX_MUSLABI64: Platform = Platform {
     target_triple: "mips64el-unknown-linux-muslabi64",
     target_arch: Arch::Mips64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2168,7 +2218,7 @@ pub(crate) const MIPS64EL_UNKNOWN_LINUX_MUSLABI64: Platform = Platform {
 pub(crate) const MIPSEL_MTI_NONE_ELF: Platform = Platform {
     target_triple: "mipsel-mti-none-elf",
     target_arch: Arch::Mips,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2179,7 +2229,7 @@ pub(crate) const MIPSEL_MTI_NONE_ELF: Platform = Platform {
 pub(crate) const MIPSEL_SONY_PSP: Platform = Platform {
     target_triple: "mipsel-sony-psp",
     target_arch: Arch::Mips,
-    target_os: OS::Psp,
+    target_os: Os::Psp,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2190,7 +2240,7 @@ pub(crate) const MIPSEL_SONY_PSP: Platform = Platform {
 pub(crate) const MIPSEL_SONY_PSX: Platform = Platform {
     target_triple: "mipsel-sony-psx",
     target_arch: Arch::Mips,
-    target_os: OS::Psx,
+    target_os: Os::Psx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2201,7 +2251,7 @@ pub(crate) const MIPSEL_SONY_PSX: Platform = Platform {
 pub(crate) const MIPSEL_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "mipsel-unknown-linux-gnu",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2212,7 +2262,7 @@ pub(crate) const MIPSEL_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const MIPSEL_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "mipsel-unknown-linux-musl",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2223,7 +2273,7 @@ pub(crate) const MIPSEL_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const MIPSEL_UNKNOWN_LINUX_UCLIBC: Platform = Platform {
     target_triple: "mipsel-unknown-linux-uclibc",
     target_arch: Arch::Mips,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::UClibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2234,7 +2284,7 @@ pub(crate) const MIPSEL_UNKNOWN_LINUX_UCLIBC: Platform = Platform {
 pub(crate) const MIPSEL_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "mipsel-unknown-netbsd",
     target_arch: Arch::Mips,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2245,7 +2295,7 @@ pub(crate) const MIPSEL_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const MIPSEL_UNKNOWN_NONE: Platform = Platform {
     target_triple: "mipsel-unknown-none",
     target_arch: Arch::Mips,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2256,7 +2306,7 @@ pub(crate) const MIPSEL_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const MIPSISA32R6_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "mipsisa32r6-unknown-linux-gnu",
     target_arch: Arch::Mips32r6,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2267,7 +2317,7 @@ pub(crate) const MIPSISA32R6_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const MIPSISA32R6EL_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "mipsisa32r6el-unknown-linux-gnu",
     target_arch: Arch::Mips32r6,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2278,7 +2328,7 @@ pub(crate) const MIPSISA32R6EL_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const MIPSISA64R6_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
     target_triple: "mipsisa64r6-unknown-linux-gnuabi64",
     target_arch: Arch::Mips64r6,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2289,7 +2339,7 @@ pub(crate) const MIPSISA64R6_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
 pub(crate) const MIPSISA64R6EL_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
     target_triple: "mipsisa64r6el-unknown-linux-gnuabi64",
     target_arch: Arch::Mips64r6,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2300,7 +2350,7 @@ pub(crate) const MIPSISA64R6EL_UNKNOWN_LINUX_GNUABI64: Platform = Platform {
 pub(crate) const MSP430_NONE_ELF: Platform = Platform {
     target_triple: "msp430-none-elf",
     target_arch: Arch::Msp430,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U16,
@@ -2311,7 +2361,7 @@ pub(crate) const MSP430_NONE_ELF: Platform = Platform {
 pub(crate) const NVPTX64_NVIDIA_CUDA: Platform = Platform {
     target_triple: "nvptx64-nvidia-cuda",
     target_arch: Arch::Nvptx64,
-    target_os: OS::Cuda,
+    target_os: Os::Cuda,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2322,7 +2372,7 @@ pub(crate) const NVPTX64_NVIDIA_CUDA: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "powerpc-unknown-freebsd",
     target_arch: Arch::PowerPc,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2333,7 +2383,7 @@ pub(crate) const POWERPC_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_HELENOS: Platform = Platform {
     target_triple: "powerpc-unknown-helenos",
     target_arch: Arch::PowerPc,
-    target_os: OS::HelenOS,
+    target_os: Os::HelenOS,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2344,7 +2394,7 @@ pub(crate) const POWERPC_UNKNOWN_HELENOS: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "powerpc-unknown-linux-gnu",
     target_arch: Arch::PowerPc,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2355,7 +2405,7 @@ pub(crate) const POWERPC_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_LINUX_GNUSPE: Platform = Platform {
     target_triple: "powerpc-unknown-linux-gnuspe",
     target_arch: Arch::PowerPc,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2366,7 +2416,7 @@ pub(crate) const POWERPC_UNKNOWN_LINUX_GNUSPE: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "powerpc-unknown-linux-musl",
     target_arch: Arch::PowerPc,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2377,7 +2427,7 @@ pub(crate) const POWERPC_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_LINUX_MUSLSPE: Platform = Platform {
     target_triple: "powerpc-unknown-linux-muslspe",
     target_arch: Arch::PowerPc,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2388,7 +2438,7 @@ pub(crate) const POWERPC_UNKNOWN_LINUX_MUSLSPE: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "powerpc-unknown-netbsd",
     target_arch: Arch::PowerPc,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2398,7 +2448,7 @@ pub(crate) const POWERPC_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const POWERPC_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "powerpc-unknown-openbsd",
     target_arch: Arch::PowerPc,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2408,7 +2458,7 @@ pub(crate) const POWERPC_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const POWERPC_WRS_VXWORKS: Platform = Platform {
     target_triple: "powerpc-wrs-vxworks",
     target_arch: Arch::PowerPc,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2418,7 +2468,7 @@ pub(crate) const POWERPC_WRS_VXWORKS: Platform = Platform {
 pub(crate) const POWERPC_WRS_VXWORKS_SPE: Platform = Platform {
     target_triple: "powerpc-wrs-vxworks-spe",
     target_arch: Arch::PowerPc,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2429,7 +2479,7 @@ pub(crate) const POWERPC_WRS_VXWORKS_SPE: Platform = Platform {
 pub(crate) const POWERPC64_IBM_AIX: Platform = Platform {
     target_triple: "powerpc64-ibm-aix",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Aix,
+    target_os: Os::Aix,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2440,7 +2490,7 @@ pub(crate) const POWERPC64_IBM_AIX: Platform = Platform {
 pub(crate) const POWERPC64_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "powerpc64-unknown-freebsd",
     target_arch: Arch::PowerPc64,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2451,7 +2501,7 @@ pub(crate) const POWERPC64_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const POWERPC64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "powerpc64-unknown-linux-gnu",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2462,7 +2512,7 @@ pub(crate) const POWERPC64_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const POWERPC64_UNKNOWN_LINUX_GNUELFV2: Platform = Platform {
     target_triple: "powerpc64-unknown-linux-gnuelfv2",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2473,7 +2523,7 @@ pub(crate) const POWERPC64_UNKNOWN_LINUX_GNUELFV2: Platform = Platform {
 pub(crate) const POWERPC64_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "powerpc64-unknown-linux-musl",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2484,7 +2534,7 @@ pub(crate) const POWERPC64_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const POWERPC64_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "powerpc64-unknown-openbsd",
     target_arch: Arch::PowerPc64,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2494,7 +2544,7 @@ pub(crate) const POWERPC64_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const POWERPC64_WRS_VXWORKS: Platform = Platform {
     target_triple: "powerpc64-wrs-vxworks",
     target_arch: Arch::PowerPc64,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2505,7 +2555,7 @@ pub(crate) const POWERPC64_WRS_VXWORKS: Platform = Platform {
 pub(crate) const POWERPC64LE_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "powerpc64le-unknown-freebsd",
     target_arch: Arch::PowerPc64,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2516,7 +2566,7 @@ pub(crate) const POWERPC64LE_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const POWERPC64LE_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "powerpc64le-unknown-linux-gnu",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2527,7 +2577,7 @@ pub(crate) const POWERPC64LE_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const POWERPC64LE_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "powerpc64le-unknown-linux-musl",
     target_arch: Arch::PowerPc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2537,7 +2587,7 @@ pub(crate) const POWERPC64LE_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const RISCV32_WRS_VXWORKS: Platform = Platform {
     target_triple: "riscv32-wrs-vxworks",
     target_arch: Arch::Riscv32,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2548,7 +2598,7 @@ pub(crate) const RISCV32_WRS_VXWORKS: Platform = Platform {
 pub(crate) const RISCV32E_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32e-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2559,7 +2609,7 @@ pub(crate) const RISCV32E_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32EM_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32em-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2570,7 +2620,7 @@ pub(crate) const RISCV32EM_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32EMC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32emc-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2581,7 +2631,7 @@ pub(crate) const RISCV32EMC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32GC_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "riscv32gc-unknown-linux-gnu",
     target_arch: Arch::Riscv32,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2592,7 +2642,7 @@ pub(crate) const RISCV32GC_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const RISCV32GC_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "riscv32gc-unknown-linux-musl",
     target_arch: Arch::Riscv32,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2603,7 +2653,7 @@ pub(crate) const RISCV32GC_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const RISCV32I_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32i-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2614,7 +2664,7 @@ pub(crate) const RISCV32I_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IM_RISC0_ZKVM_ELF: Platform = Platform {
     target_triple: "riscv32im-risc0-zkvm-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Zkvm,
+    target_os: Os::Zkvm,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2625,7 +2675,7 @@ pub(crate) const RISCV32IM_RISC0_ZKVM_ELF: Platform = Platform {
 pub(crate) const RISCV32IM_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32im-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2636,7 +2686,7 @@ pub(crate) const RISCV32IM_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IMA_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32ima-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2647,7 +2697,7 @@ pub(crate) const RISCV32IMA_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IMAC_ESP_ESPIDF: Platform = Platform {
     target_triple: "riscv32imac-esp-espidf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2658,7 +2708,7 @@ pub(crate) const RISCV32IMAC_ESP_ESPIDF: Platform = Platform {
 pub(crate) const RISCV32IMAC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32imac-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2669,7 +2719,7 @@ pub(crate) const RISCV32IMAC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IMAC_UNKNOWN_NUTTX_ELF: Platform = Platform {
     target_triple: "riscv32imac-unknown-nuttx-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2680,7 +2730,7 @@ pub(crate) const RISCV32IMAC_UNKNOWN_NUTTX_ELF: Platform = Platform {
 pub(crate) const RISCV32IMAC_UNKNOWN_XOUS_ELF: Platform = Platform {
     target_triple: "riscv32imac-unknown-xous-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Xous,
+    target_os: Os::Xous,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2691,7 +2741,7 @@ pub(crate) const RISCV32IMAC_UNKNOWN_XOUS_ELF: Platform = Platform {
 pub(crate) const RISCV32IMAFC_ESP_ESPIDF: Platform = Platform {
     target_triple: "riscv32imafc-esp-espidf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2702,7 +2752,7 @@ pub(crate) const RISCV32IMAFC_ESP_ESPIDF: Platform = Platform {
 pub(crate) const RISCV32IMAFC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32imafc-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2713,7 +2763,7 @@ pub(crate) const RISCV32IMAFC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IMAFC_UNKNOWN_NUTTX_ELF: Platform = Platform {
     target_triple: "riscv32imafc-unknown-nuttx-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2724,7 +2774,7 @@ pub(crate) const RISCV32IMAFC_UNKNOWN_NUTTX_ELF: Platform = Platform {
 pub(crate) const RISCV32IMC_ESP_ESPIDF: Platform = Platform {
     target_triple: "riscv32imc-esp-espidf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2735,7 +2785,7 @@ pub(crate) const RISCV32IMC_ESP_ESPIDF: Platform = Platform {
 pub(crate) const RISCV32IMC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv32imc-unknown-none-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2746,7 +2796,7 @@ pub(crate) const RISCV32IMC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV32IMC_UNKNOWN_NUTTX_ELF: Platform = Platform {
     target_triple: "riscv32imc-unknown-nuttx-elf",
     target_arch: Arch::Riscv32,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -2757,8 +2807,19 @@ pub(crate) const RISCV32IMC_UNKNOWN_NUTTX_ELF: Platform = Platform {
 pub(crate) const RISCV64_LINUX_ANDROID: Platform = Platform {
     target_triple: "riscv64-linux-android",
     target_arch: Arch::Riscv64,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
+};
+
+/// RISC-V OpenEmbedded/Yocto Linux (GNU)
+pub(crate) const RISCV64_OE_LINUX_GNU: Platform = Platform {
+    target_triple: "riscv64-oe-linux-gnu",
+    target_arch: Arch::Riscv64,
+    target_os: Os::Linux,
+    target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
@@ -2767,7 +2828,7 @@ pub(crate) const RISCV64_LINUX_ANDROID: Platform = Platform {
 pub(crate) const RISCV64_WRS_VXWORKS: Platform = Platform {
     target_triple: "riscv64-wrs-vxworks",
     target_arch: Arch::Riscv64,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2778,7 +2839,7 @@ pub(crate) const RISCV64_WRS_VXWORKS: Platform = Platform {
 pub(crate) const RISCV64A23_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "riscv64a23-unknown-linux-gnu",
     target_arch: Arch::Riscv64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2789,7 +2850,7 @@ pub(crate) const RISCV64A23_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "riscv64gc-unknown-freebsd",
     target_arch: Arch::Riscv64,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2800,7 +2861,7 @@ pub(crate) const RISCV64GC_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_FUCHSIA: Platform = Platform {
     target_triple: "riscv64gc-unknown-fuchsia",
     target_arch: Arch::Riscv64,
-    target_os: OS::Fuchsia,
+    target_os: Os::Fuchsia,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2811,7 +2872,7 @@ pub(crate) const RISCV64GC_UNKNOWN_FUCHSIA: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_HERMIT: Platform = Platform {
     target_triple: "riscv64gc-unknown-hermit",
     target_arch: Arch::Riscv64,
-    target_os: OS::Hermit,
+    target_os: Os::Hermit,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2822,7 +2883,7 @@ pub(crate) const RISCV64GC_UNKNOWN_HERMIT: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "riscv64gc-unknown-linux-gnu",
     target_arch: Arch::Riscv64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2833,7 +2894,7 @@ pub(crate) const RISCV64GC_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "riscv64gc-unknown-linux-musl",
     target_arch: Arch::Riscv64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2844,7 +2905,7 @@ pub(crate) const RISCV64GC_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
     target_triple: "riscv64gc-unknown-managarm-mlibc",
     target_arch: Arch::Riscv64,
-    target_os: OS::Managarm,
+    target_os: Os::Managarm,
     target_env: Env::Mlibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2855,7 +2916,7 @@ pub(crate) const RISCV64GC_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "riscv64gc-unknown-netbsd",
     target_arch: Arch::Riscv64,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2866,7 +2927,7 @@ pub(crate) const RISCV64GC_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv64gc-unknown-none-elf",
     target_arch: Arch::Riscv64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2877,7 +2938,7 @@ pub(crate) const RISCV64GC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_NUTTX_ELF: Platform = Platform {
     target_triple: "riscv64gc-unknown-nuttx-elf",
     target_arch: Arch::Riscv64,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2888,7 +2949,7 @@ pub(crate) const RISCV64GC_UNKNOWN_NUTTX_ELF: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "riscv64gc-unknown-openbsd",
     target_arch: Arch::Riscv64,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2899,7 +2960,7 @@ pub(crate) const RISCV64GC_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const RISCV64GC_UNKNOWN_REDOX: Platform = Platform {
     target_triple: "riscv64gc-unknown-redox",
     target_arch: Arch::Riscv64,
-    target_os: OS::Redox,
+    target_os: Os::Redox,
     target_env: Env::Relibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2910,7 +2971,7 @@ pub(crate) const RISCV64GC_UNKNOWN_REDOX: Platform = Platform {
 pub(crate) const RISCV64IM_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv64im-unknown-none-elf",
     target_arch: Arch::Riscv64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2921,7 +2982,7 @@ pub(crate) const RISCV64IM_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV64IMAC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "riscv64imac-unknown-none-elf",
     target_arch: Arch::Riscv64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2932,7 +2993,7 @@ pub(crate) const RISCV64IMAC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const RISCV64IMAC_UNKNOWN_NUTTX_ELF: Platform = Platform {
     target_triple: "riscv64imac-unknown-nuttx-elf",
     target_arch: Arch::Riscv64,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -2943,7 +3004,7 @@ pub(crate) const RISCV64IMAC_UNKNOWN_NUTTX_ELF: Platform = Platform {
 pub(crate) const S390X_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "s390x-unknown-linux-gnu",
     target_arch: Arch::S390X,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2954,7 +3015,7 @@ pub(crate) const S390X_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const S390X_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "s390x-unknown-linux-musl",
     target_arch: Arch::S390X,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2965,7 +3026,7 @@ pub(crate) const S390X_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const S390X_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     target_triple: "s390x-unknown-none-softfloat",
     target_arch: Arch::S390X,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -2976,7 +3037,7 @@ pub(crate) const S390X_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
 pub(crate) const SPARC_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "sparc-unknown-linux-gnu",
     target_arch: Arch::Sparc,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2987,7 +3048,7 @@ pub(crate) const SPARC_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const SPARC_UNKNOWN_NONE_ELF: Platform = Platform {
     target_triple: "sparc-unknown-none-elf",
     target_arch: Arch::Sparc,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U32,
@@ -2998,7 +3059,7 @@ pub(crate) const SPARC_UNKNOWN_NONE_ELF: Platform = Platform {
 pub(crate) const SPARC64_UNKNOWN_HELENOS: Platform = Platform {
     target_triple: "sparc64-unknown-helenos",
     target_arch: Arch::Sparc64,
-    target_os: OS::HelenOS,
+    target_os: Os::HelenOS,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -3009,7 +3070,7 @@ pub(crate) const SPARC64_UNKNOWN_HELENOS: Platform = Platform {
 pub(crate) const SPARC64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "sparc64-unknown-linux-gnu",
     target_arch: Arch::Sparc64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -3020,7 +3081,7 @@ pub(crate) const SPARC64_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const SPARC64_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "sparc64-unknown-netbsd",
     target_arch: Arch::Sparc64,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -3031,7 +3092,7 @@ pub(crate) const SPARC64_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const SPARC64_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "sparc64-unknown-openbsd",
     target_arch: Arch::Sparc64,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -3042,7 +3103,7 @@ pub(crate) const SPARC64_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const SPARCV9_SUN_SOLARIS: Platform = Platform {
     target_triple: "sparcv9-sun-solaris",
     target_arch: Arch::Sparc64,
-    target_os: OS::Solaris,
+    target_os: Os::Solaris,
     target_env: Env::None,
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
@@ -3053,7 +3114,7 @@ pub(crate) const SPARCV9_SUN_SOLARIS: Platform = Platform {
 pub(crate) const THUMBV4T_NONE_EABI: Platform = Platform {
     target_triple: "thumbv4t-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3064,7 +3125,7 @@ pub(crate) const THUMBV4T_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV5TE_NONE_EABI: Platform = Platform {
     target_triple: "thumbv5te-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3075,7 +3136,7 @@ pub(crate) const THUMBV5TE_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV6_NONE_EABI: Platform = Platform {
     target_triple: "thumbv6-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3086,7 +3147,7 @@ pub(crate) const THUMBV6_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV6M_NONE_EABI: Platform = Platform {
     target_triple: "thumbv6m-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3097,7 +3158,7 @@ pub(crate) const THUMBV6M_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV6M_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv6m-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3108,7 +3169,7 @@ pub(crate) const THUMBV6M_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV7A_NONE_EABI: Platform = Platform {
     target_triple: "thumbv7a-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3119,7 +3180,7 @@ pub(crate) const THUMBV7A_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV7A_NONE_EABIHF: Platform = Platform {
     target_triple: "thumbv7a-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3130,7 +3191,7 @@ pub(crate) const THUMBV7A_NONE_EABIHF: Platform = Platform {
 pub(crate) const THUMBV7A_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv7a-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3141,7 +3202,7 @@ pub(crate) const THUMBV7A_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV7A_NUTTX_EABIHF: Platform = Platform {
     target_triple: "thumbv7a-nuttx-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3151,7 +3212,7 @@ pub(crate) const THUMBV7A_NUTTX_EABIHF: Platform = Platform {
 pub(crate) const THUMBV7A_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "thumbv7a-pc-windows-msvc",
     target_arch: Arch::Arm,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3161,7 +3222,7 @@ pub(crate) const THUMBV7A_PC_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const THUMBV7A_UWP_WINDOWS_MSVC: Platform = Platform {
     target_triple: "thumbv7a-uwp-windows-msvc",
     target_arch: Arch::Arm,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3172,7 +3233,7 @@ pub(crate) const THUMBV7A_UWP_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const THUMBV7EM_NONE_EABI: Platform = Platform {
     target_triple: "thumbv7em-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3183,7 +3244,7 @@ pub(crate) const THUMBV7EM_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV7EM_NONE_EABIHF: Platform = Platform {
     target_triple: "thumbv7em-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3194,7 +3255,7 @@ pub(crate) const THUMBV7EM_NONE_EABIHF: Platform = Platform {
 pub(crate) const THUMBV7EM_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv7em-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3205,7 +3266,7 @@ pub(crate) const THUMBV7EM_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV7EM_NUTTX_EABIHF: Platform = Platform {
     target_triple: "thumbv7em-nuttx-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3216,7 +3277,7 @@ pub(crate) const THUMBV7EM_NUTTX_EABIHF: Platform = Platform {
 pub(crate) const THUMBV7M_NONE_EABI: Platform = Platform {
     target_triple: "thumbv7m-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3227,7 +3288,7 @@ pub(crate) const THUMBV7M_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV7M_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv7m-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3238,7 +3299,7 @@ pub(crate) const THUMBV7M_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV7NEON_LINUX_ANDROIDEABI: Platform = Platform {
     target_triple: "thumbv7neon-linux-androideabi",
     target_arch: Arch::Arm,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3249,7 +3310,7 @@ pub(crate) const THUMBV7NEON_LINUX_ANDROIDEABI: Platform = Platform {
 pub(crate) const THUMBV7NEON_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
     target_triple: "thumbv7neon-unknown-linux-gnueabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3260,7 +3321,7 @@ pub(crate) const THUMBV7NEON_UNKNOWN_LINUX_GNUEABIHF: Platform = Platform {
 pub(crate) const THUMBV7NEON_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
     target_triple: "thumbv7neon-unknown-linux-musleabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3271,7 +3332,7 @@ pub(crate) const THUMBV7NEON_UNKNOWN_LINUX_MUSLEABIHF: Platform = Platform {
 pub(crate) const THUMBV7R_NONE_EABI: Platform = Platform {
     target_triple: "thumbv7r-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3282,7 +3343,7 @@ pub(crate) const THUMBV7R_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV7R_NONE_EABIHF: Platform = Platform {
     target_triple: "thumbv7r-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3293,7 +3354,7 @@ pub(crate) const THUMBV7R_NONE_EABIHF: Platform = Platform {
 pub(crate) const THUMBV8M_BASE_NONE_EABI: Platform = Platform {
     target_triple: "thumbv8m.base-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3304,7 +3365,7 @@ pub(crate) const THUMBV8M_BASE_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV8M_BASE_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv8m.base-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3315,7 +3376,7 @@ pub(crate) const THUMBV8M_BASE_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV8M_MAIN_NONE_EABI: Platform = Platform {
     target_triple: "thumbv8m.main-none-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3326,7 +3387,7 @@ pub(crate) const THUMBV8M_MAIN_NONE_EABI: Platform = Platform {
 pub(crate) const THUMBV8M_MAIN_NONE_EABIHF: Platform = Platform {
     target_triple: "thumbv8m.main-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3337,7 +3398,7 @@ pub(crate) const THUMBV8M_MAIN_NONE_EABIHF: Platform = Platform {
 pub(crate) const THUMBV8M_MAIN_NUTTX_EABI: Platform = Platform {
     target_triple: "thumbv8m.main-nuttx-eabi",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3348,7 +3409,7 @@ pub(crate) const THUMBV8M_MAIN_NUTTX_EABI: Platform = Platform {
 pub(crate) const THUMBV8M_MAIN_NUTTX_EABIHF: Platform = Platform {
     target_triple: "thumbv8m.main-nuttx-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::Nuttx,
+    target_os: Os::Nuttx,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3359,7 +3420,7 @@ pub(crate) const THUMBV8M_MAIN_NUTTX_EABIHF: Platform = Platform {
 pub(crate) const THUMBV8R_NONE_EABIHF: Platform = Platform {
     target_triple: "thumbv8r-none-eabihf",
     target_arch: Arch::Arm,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3370,7 +3431,7 @@ pub(crate) const THUMBV8R_NONE_EABIHF: Platform = Platform {
 pub(crate) const WASM32_UNKNOWN_EMSCRIPTEN: Platform = Platform {
     target_triple: "wasm32-unknown-emscripten",
     target_arch: Arch::Wasm32,
-    target_os: OS::Emscripten,
+    target_os: Os::Emscripten,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3381,7 +3442,7 @@ pub(crate) const WASM32_UNKNOWN_EMSCRIPTEN: Platform = Platform {
 pub(crate) const WASM32_UNKNOWN_UNKNOWN: Platform = Platform {
     target_triple: "wasm32-unknown-unknown",
     target_arch: Arch::Wasm32,
-    target_os: OS::Unknown,
+    target_os: Os::Unknown,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3392,7 +3453,7 @@ pub(crate) const WASM32_UNKNOWN_UNKNOWN: Platform = Platform {
 pub(crate) const WASM32_WALI_LINUX_MUSL: Platform = Platform {
     target_triple: "wasm32-wali-linux-musl",
     target_arch: Arch::Wasm32,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3403,7 +3464,7 @@ pub(crate) const WASM32_WALI_LINUX_MUSL: Platform = Platform {
 pub(crate) const WASM32_WASIP1: Platform = Platform {
     target_triple: "wasm32-wasip1",
     target_arch: Arch::Wasm32,
-    target_os: OS::Wasi,
+    target_os: Os::Wasi,
     target_env: Env::P1,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3414,7 +3475,7 @@ pub(crate) const WASM32_WASIP1: Platform = Platform {
 pub(crate) const WASM32_WASIP1_THREADS: Platform = Platform {
     target_triple: "wasm32-wasip1-threads",
     target_arch: Arch::Wasm32,
-    target_os: OS::Wasi,
+    target_os: Os::Wasi,
     target_env: Env::P1,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3425,7 +3486,7 @@ pub(crate) const WASM32_WASIP1_THREADS: Platform = Platform {
 pub(crate) const WASM32_WASIP2: Platform = Platform {
     target_triple: "wasm32-wasip2",
     target_arch: Arch::Wasm32,
-    target_os: OS::Wasi,
+    target_os: Os::Wasi,
     target_env: Env::P2,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3436,7 +3497,7 @@ pub(crate) const WASM32_WASIP2: Platform = Platform {
 pub(crate) const WASM32_WASIP3: Platform = Platform {
     target_triple: "wasm32-wasip3",
     target_arch: Arch::Wasm32,
-    target_os: OS::Wasi,
+    target_os: Os::Wasi,
     target_env: Env::P3,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3447,7 +3508,7 @@ pub(crate) const WASM32_WASIP3: Platform = Platform {
 pub(crate) const WASM32V1_NONE: Platform = Platform {
     target_triple: "wasm32v1-none",
     target_arch: Arch::Wasm32,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3458,7 +3519,7 @@ pub(crate) const WASM32V1_NONE: Platform = Platform {
 pub(crate) const WASM64_UNKNOWN_UNKNOWN: Platform = Platform {
     target_triple: "wasm64-unknown-unknown",
     target_arch: Arch::Wasm64,
-    target_os: OS::Unknown,
+    target_os: Os::Unknown,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3469,7 +3530,7 @@ pub(crate) const WASM64_UNKNOWN_UNKNOWN: Platform = Platform {
 pub(crate) const X86_64_APPLE_DARWIN: Platform = Platform {
     target_triple: "x86_64-apple-darwin",
     target_arch: Arch::X86_64,
-    target_os: OS::MacOS,
+    target_os: Os::MacOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3480,7 +3541,7 @@ pub(crate) const X86_64_APPLE_DARWIN: Platform = Platform {
 pub(crate) const X86_64_APPLE_IOS: Platform = Platform {
     target_triple: "x86_64-apple-ios",
     target_arch: Arch::X86_64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3491,7 +3552,7 @@ pub(crate) const X86_64_APPLE_IOS: Platform = Platform {
 pub(crate) const X86_64_APPLE_IOS_MACABI: Platform = Platform {
     target_triple: "x86_64-apple-ios-macabi",
     target_arch: Arch::X86_64,
-    target_os: OS::iOS,
+    target_os: Os::iOS,
     target_env: Env::Macabi,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3502,7 +3563,7 @@ pub(crate) const X86_64_APPLE_IOS_MACABI: Platform = Platform {
 pub(crate) const X86_64_APPLE_TVOS: Platform = Platform {
     target_triple: "x86_64-apple-tvos",
     target_arch: Arch::X86_64,
-    target_os: OS::TvOS,
+    target_os: Os::TvOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3513,7 +3574,7 @@ pub(crate) const X86_64_APPLE_TVOS: Platform = Platform {
 pub(crate) const X86_64_APPLE_WATCHOS_SIM: Platform = Platform {
     target_triple: "x86_64-apple-watchos-sim",
     target_arch: Arch::X86_64,
-    target_os: OS::WatchOS,
+    target_os: Os::WatchOS,
     target_env: Env::Sim,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3524,7 +3585,7 @@ pub(crate) const X86_64_APPLE_WATCHOS_SIM: Platform = Platform {
 pub(crate) const X86_64_FORTANIX_UNKNOWN_SGX: Platform = Platform {
     target_triple: "x86_64-fortanix-unknown-sgx",
     target_arch: Arch::X86_64,
-    target_os: OS::Unknown,
+    target_os: Os::Unknown,
     target_env: Env::Sgx,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3535,7 +3596,7 @@ pub(crate) const X86_64_FORTANIX_UNKNOWN_SGX: Platform = Platform {
 pub(crate) const X86_64_LINUX_ANDROID: Platform = Platform {
     target_triple: "x86_64-linux-android",
     target_arch: Arch::X86_64,
-    target_os: OS::Android,
+    target_os: Os::Android,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3546,8 +3607,19 @@ pub(crate) const X86_64_LINUX_ANDROID: Platform = Platform {
 pub(crate) const X86_64_LYNX_LYNXOS178: Platform = Platform {
     target_triple: "x86_64-lynx-lynxos178",
     target_arch: Arch::X86_64,
-    target_os: OS::Lynxos178,
+    target_os: Os::Lynxos178,
     target_env: Env::None,
+    target_endian: Endian::Little,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
+};
+
+/// x86 64-bit OpenEmbedded/Yocto Linux (GNU)
+pub(crate) const X86_64_OE_LINUX_GNU: Platform = Platform {
+    target_triple: "x86_64-oe-linux-gnu",
+    target_arch: Arch::X86_64,
+    target_os: Os::Linux,
+    target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
@@ -3557,7 +3629,7 @@ pub(crate) const X86_64_LYNX_LYNXOS178: Platform = Platform {
 pub(crate) const X86_64_PC_CYGWIN: Platform = Platform {
     target_triple: "x86_64-pc-cygwin",
     target_arch: Arch::X86_64,
-    target_os: OS::Cygwin,
+    target_os: Os::Cygwin,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3568,7 +3640,7 @@ pub(crate) const X86_64_PC_CYGWIN: Platform = Platform {
 pub(crate) const X86_64_PC_NTO_QNX710: Platform = Platform {
     target_triple: "x86_64-pc-nto-qnx710",
     target_arch: Arch::X86_64,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto71,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3579,19 +3651,19 @@ pub(crate) const X86_64_PC_NTO_QNX710: Platform = Platform {
 pub(crate) const X86_64_PC_NTO_QNX710_IOSOCK: Platform = Platform {
     target_triple: "x86_64-pc-nto-qnx710_iosock",
     target_arch: Arch::X86_64,
-    target_os: OS::Nto,
+    target_os: Os::Nto,
     target_env: Env::Nto71Iosock,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
 };
 
-/// x86 64-bit QNX Neutrino 8.0 RTOS
-pub(crate) const X86_64_PC_NTO_QNX800: Platform = Platform {
-    target_triple: "x86_64-pc-nto-qnx800",
+/// x86 64-bit QNX SDP 8.0+
+pub(crate) const X86_64_PC_QNX: Platform = Platform {
+    target_triple: "x86_64-pc-qnx",
     target_arch: Arch::X86_64,
-    target_os: OS::Nto,
-    target_env: Env::Nto80,
+    target_os: Os::Qnx,
+    target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Three,
@@ -3601,7 +3673,7 @@ pub(crate) const X86_64_PC_NTO_QNX800: Platform = Platform {
 pub(crate) const X86_64_PC_SOLARIS: Platform = Platform {
     target_triple: "x86_64-pc-solaris",
     target_arch: Arch::X86_64,
-    target_os: OS::Solaris,
+    target_os: Os::Solaris,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3612,7 +3684,7 @@ pub(crate) const X86_64_PC_SOLARIS: Platform = Platform {
 pub(crate) const X86_64_PC_WINDOWS_GNU: Platform = Platform {
     target_triple: "x86_64-pc-windows-gnu",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3623,7 +3695,7 @@ pub(crate) const X86_64_PC_WINDOWS_GNU: Platform = Platform {
 pub(crate) const X86_64_PC_WINDOWS_GNULLVM: Platform = Platform {
     target_triple: "x86_64-pc-windows-gnullvm",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3634,7 +3706,7 @@ pub(crate) const X86_64_PC_WINDOWS_GNULLVM: Platform = Platform {
 pub(crate) const X86_64_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "x86_64-pc-windows-msvc",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3645,7 +3717,7 @@ pub(crate) const X86_64_PC_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const X86_64_UNIKRAFT_LINUX_MUSL: Platform = Platform {
     target_triple: "x86_64-unikraft-linux-musl",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3656,7 +3728,7 @@ pub(crate) const X86_64_UNIKRAFT_LINUX_MUSL: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_DRAGONFLY: Platform = Platform {
     target_triple: "x86_64-unknown-dragonfly",
     target_arch: Arch::X86_64,
-    target_os: OS::Dragonfly,
+    target_os: Os::Dragonfly,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3667,7 +3739,7 @@ pub(crate) const X86_64_UNKNOWN_DRAGONFLY: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "x86_64-unknown-freebsd",
     target_arch: Arch::X86_64,
-    target_os: OS::FreeBSD,
+    target_os: Os::FreeBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3678,7 +3750,7 @@ pub(crate) const X86_64_UNKNOWN_FREEBSD: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_FUCHSIA: Platform = Platform {
     target_triple: "x86_64-unknown-fuchsia",
     target_arch: Arch::X86_64,
-    target_os: OS::Fuchsia,
+    target_os: Os::Fuchsia,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3689,7 +3761,7 @@ pub(crate) const X86_64_UNKNOWN_FUCHSIA: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_HAIKU: Platform = Platform {
     target_triple: "x86_64-unknown-haiku",
     target_arch: Arch::X86_64,
-    target_os: OS::Haiku,
+    target_os: Os::Haiku,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3700,7 +3772,7 @@ pub(crate) const X86_64_UNKNOWN_HAIKU: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_HELENOS: Platform = Platform {
     target_triple: "x86_64-unknown-helenos",
     target_arch: Arch::X86_64,
-    target_os: OS::HelenOS,
+    target_os: Os::HelenOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3711,7 +3783,7 @@ pub(crate) const X86_64_UNKNOWN_HELENOS: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_HERMIT: Platform = Platform {
     target_triple: "x86_64-unknown-hermit",
     target_arch: Arch::X86_64,
-    target_os: OS::Hermit,
+    target_os: Os::Hermit,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3722,7 +3794,7 @@ pub(crate) const X86_64_UNKNOWN_HERMIT: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_HURD_GNU: Platform = Platform {
     target_triple: "x86_64-unknown-hurd-gnu",
     target_arch: Arch::X86_64,
-    target_os: OS::Hurd,
+    target_os: Os::Hurd,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3733,7 +3805,7 @@ pub(crate) const X86_64_UNKNOWN_HURD_GNU: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_ILLUMOS: Platform = Platform {
     target_triple: "x86_64-unknown-illumos",
     target_arch: Arch::X86_64,
-    target_os: OS::IllumOS,
+    target_os: Os::IllumOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3743,7 +3815,7 @@ pub(crate) const X86_64_UNKNOWN_ILLUMOS: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_L4RE_UCLIBC: Platform = Platform {
     target_triple: "x86_64-unknown-l4re-uclibc",
     target_arch: Arch::X86_64,
-    target_os: OS::L4re,
+    target_os: Os::L4re,
     target_env: Env::UClibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3754,7 +3826,7 @@ pub(crate) const X86_64_UNKNOWN_L4RE_UCLIBC: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "x86_64-unknown-linux-gnu",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3765,7 +3837,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_GNU: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_GNUASAN: Platform = Platform {
     target_triple: "x86_64-unknown-linux-gnuasan",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3776,7 +3848,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_GNUASAN: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_GNUMSAN: Platform = Platform {
     target_triple: "x86_64-unknown-linux-gnumsan",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3787,7 +3859,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_GNUMSAN: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_GNUTSAN: Platform = Platform {
     target_triple: "x86_64-unknown-linux-gnutsan",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3798,7 +3870,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_GNUTSAN: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_GNUX32: Platform = Platform {
     target_triple: "x86_64-unknown-linux-gnux32",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -3809,7 +3881,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_GNUX32: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "x86_64-unknown-linux-musl",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::Musl,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3820,7 +3892,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_MUSL: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_NONE: Platform = Platform {
     target_triple: "x86_64-unknown-linux-none",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3831,7 +3903,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_NONE: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_LINUX_OHOS: Platform = Platform {
     target_triple: "x86_64-unknown-linux-ohos",
     target_arch: Arch::X86_64,
-    target_os: OS::Linux,
+    target_os: Os::Linux,
     target_env: Env::OhOS,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3842,7 +3914,7 @@ pub(crate) const X86_64_UNKNOWN_LINUX_OHOS: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
     target_triple: "x86_64-unknown-managarm-mlibc",
     target_arch: Arch::X86_64,
-    target_os: OS::Managarm,
+    target_os: Os::Managarm,
     target_env: Env::Mlibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3853,7 +3925,7 @@ pub(crate) const X86_64_UNKNOWN_MANAGARM_MLIBC: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_MOTOR: Platform = Platform {
     target_triple: "x86_64-unknown-motor",
     target_arch: Arch::X86_64,
-    target_os: OS::Motor,
+    target_os: Os::Motor,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3864,7 +3936,7 @@ pub(crate) const X86_64_UNKNOWN_MOTOR: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "x86_64-unknown-netbsd",
     target_arch: Arch::X86_64,
-    target_os: OS::NetBSD,
+    target_os: Os::NetBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3875,7 +3947,7 @@ pub(crate) const X86_64_UNKNOWN_NETBSD: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_NONE: Platform = Platform {
     target_triple: "x86_64-unknown-none",
     target_arch: Arch::X86_64,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3886,7 +3958,7 @@ pub(crate) const X86_64_UNKNOWN_NONE: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "x86_64-unknown-openbsd",
     target_arch: Arch::X86_64,
-    target_os: OS::OpenBSD,
+    target_os: Os::OpenBSD,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3897,7 +3969,7 @@ pub(crate) const X86_64_UNKNOWN_OPENBSD: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_REDOX: Platform = Platform {
     target_triple: "x86_64-unknown-redox",
     target_arch: Arch::X86_64,
-    target_os: OS::Redox,
+    target_os: Os::Redox,
     target_env: Env::Relibc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3907,7 +3979,7 @@ pub(crate) const X86_64_UNKNOWN_REDOX: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_TRUSTY: Platform = Platform {
     target_triple: "x86_64-unknown-trusty",
     target_arch: Arch::X86_64,
-    target_os: OS::Trusty,
+    target_os: Os::Trusty,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3918,7 +3990,7 @@ pub(crate) const X86_64_UNKNOWN_TRUSTY: Platform = Platform {
 pub(crate) const X86_64_UNKNOWN_UEFI: Platform = Platform {
     target_triple: "x86_64-unknown-uefi",
     target_arch: Arch::X86_64,
-    target_os: OS::Uefi,
+    target_os: Os::Uefi,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3928,7 +4000,7 @@ pub(crate) const X86_64_UNKNOWN_UEFI: Platform = Platform {
 pub(crate) const X86_64_UWP_WINDOWS_GNU: Platform = Platform {
     target_triple: "x86_64-uwp-windows-gnu",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3938,7 +4010,7 @@ pub(crate) const X86_64_UWP_WINDOWS_GNU: Platform = Platform {
 pub(crate) const X86_64_UWP_WINDOWS_MSVC: Platform = Platform {
     target_triple: "x86_64-uwp-windows-msvc",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3949,7 +4021,7 @@ pub(crate) const X86_64_UWP_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const X86_64_WIN7_WINDOWS_GNU: Platform = Platform {
     target_triple: "x86_64-win7-windows-gnu",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3960,7 +4032,7 @@ pub(crate) const X86_64_WIN7_WINDOWS_GNU: Platform = Platform {
 pub(crate) const X86_64_WIN7_WINDOWS_MSVC: Platform = Platform {
     target_triple: "x86_64-win7-windows-msvc",
     target_arch: Arch::X86_64,
-    target_os: OS::Windows,
+    target_os: Os::Windows,
     target_env: Env::Msvc,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3970,7 +4042,7 @@ pub(crate) const X86_64_WIN7_WINDOWS_MSVC: Platform = Platform {
 pub(crate) const X86_64_WRS_VXWORKS: Platform = Platform {
     target_triple: "x86_64-wrs-vxworks",
     target_arch: Arch::X86_64,
-    target_os: OS::VxWorks,
+    target_os: Os::VxWorks,
     target_env: Env::Gnu,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3981,7 +4053,7 @@ pub(crate) const X86_64_WRS_VXWORKS: Platform = Platform {
 pub(crate) const X86_64H_APPLE_DARWIN: Platform = Platform {
     target_triple: "x86_64h-apple-darwin",
     target_arch: Arch::X86_64,
-    target_os: OS::MacOS,
+    target_os: Os::MacOS,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
@@ -3992,7 +4064,7 @@ pub(crate) const X86_64H_APPLE_DARWIN: Platform = Platform {
 pub(crate) const XTENSA_ESP32_ESPIDF: Platform = Platform {
     target_triple: "xtensa-esp32-espidf",
     target_arch: Arch::Xtensa,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -4003,7 +4075,7 @@ pub(crate) const XTENSA_ESP32_ESPIDF: Platform = Platform {
 pub(crate) const XTENSA_ESP32_NONE_ELF: Platform = Platform {
     target_triple: "xtensa-esp32-none-elf",
     target_arch: Arch::Xtensa,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -4014,7 +4086,7 @@ pub(crate) const XTENSA_ESP32_NONE_ELF: Platform = Platform {
 pub(crate) const XTENSA_ESP32S2_ESPIDF: Platform = Platform {
     target_triple: "xtensa-esp32s2-espidf",
     target_arch: Arch::Xtensa,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -4025,7 +4097,7 @@ pub(crate) const XTENSA_ESP32S2_ESPIDF: Platform = Platform {
 pub(crate) const XTENSA_ESP32S2_NONE_ELF: Platform = Platform {
     target_triple: "xtensa-esp32s2-none-elf",
     target_arch: Arch::Xtensa,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -4036,7 +4108,7 @@ pub(crate) const XTENSA_ESP32S2_NONE_ELF: Platform = Platform {
 pub(crate) const XTENSA_ESP32S3_ESPIDF: Platform = Platform {
     target_triple: "xtensa-esp32s3-espidf",
     target_arch: Arch::Xtensa,
-    target_os: OS::Espidf,
+    target_os: Os::Espidf,
     target_env: Env::Newlib,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,
@@ -4047,7 +4119,7 @@ pub(crate) const XTENSA_ESP32S3_ESPIDF: Platform = Platform {
 pub(crate) const XTENSA_ESP32S3_NONE_ELF: Platform = Platform {
     target_triple: "xtensa-esp32s3-none-elf",
     target_arch: Arch::Xtensa,
-    target_os: OS::None,
+    target_os: Os::None,
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U32,

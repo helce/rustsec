@@ -2,7 +2,6 @@
 name         = "cargo-audit"
 description  = "Audit Cargo.lock for crates with security vulnerabilities"
 version      = "0.22.2"
-authors      = ["Tony Arcieri <bascule@gmail.com>"]
 license      = "Apache-2.0 OR MIT"
 homepage     = "https://rustsec.org"
 repository   = "https://github.com/rustsec/rustsec"
@@ -22,6 +21,7 @@ cargo-lock = { workspace = true }
 clap = { workspace = true }
 home = { workspace = true }
 object = { workspace = true, optional = true }
+platforms = { workspace = true }
 rustc-demangle = { workspace = true, optional = true }
 rustsec = { workspace = true, features = ["dependency-tree"] }
 serde = { workspace = true, features = ["serde_derive"] }

@@ -1,10 +1,17 @@
 //! The `cargo audit` subcommand
 
-#[cfg(feature = "fix")]
-mod fix;
+use std::{
+    fmt,
+    io::{self, IsTerminal},
+    path::PathBuf,
+    process::exit,
+};
 
-#[cfg(feature = "binary-scanning")]
-mod binary_scanning;
+use abscissa_core::{
+    FrameworkError, FrameworkErrorKind, config::Override, error::Context, terminal::ColorChoice,
+};
+use clap::{Parser, ValueEnum};
+use platforms::{Arch, Os};
 
 use crate::{
     auditor::Auditor,
@@ -13,17 +20,12 @@ use crate::{
     lockfile,
     prelude::*,
 };
-use abscissa_core::{
-    FrameworkError, FrameworkErrorKind, config::Override, error::Context, terminal::ColorChoice,
-};
-use clap::{Parser, ValueEnum};
-use rustsec::platforms::target::{Arch, OS};
-use std::{
-    fmt,
-    io::{self, IsTerminal},
-    path::PathBuf,
-    process::exit,
-};
+
+#[cfg(feature = "fix")]
+mod fix;
+
+#[cfg(feature = "binary-scanning")]
+mod binary_scanning;
 
 #[cfg(feature = "binary-scanning")]
 use self::binary_scanning::BinCommand;
@@ -141,7 +143,7 @@ pub struct AuditCommand {
         long = "target-os",
         help = "filter vulnerabilities by OS (default: no filter). Can be specified multiple times"
     )]
-    target_os: Vec<OS>,
+    target_os: Vec<Os>,
 
     /// URL to the advisory database git repository
     #[arg(short = 'u', long = "url", help = "URL for advisory database git repo")]
