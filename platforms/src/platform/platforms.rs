@@ -207,6 +207,7 @@ pub(crate) const ALL: &[Platform] = &[
     POWERPC64_IBM_AIX,
     POWERPC64_UNKNOWN_FREEBSD,
     POWERPC64_UNKNOWN_LINUX_GNU,
+    POWERPC64_UNKNOWN_LINUX_GNUELFV2,
     POWERPC64_UNKNOWN_LINUX_MUSL,
     POWERPC64_UNKNOWN_OPENBSD,
     POWERPC64_WRS_VXWORKS,
@@ -527,7 +528,7 @@ pub(crate) const AARCH64_UNKNOWN_FREEBSD: Platform = Platform {
     target_env: Env::None,
     target_endian: Endian::Little,
     target_pointer_width: PointerWidth::U64,
-    tier: Tier::Three,
+    tier: Tier::Two,
 };
 
 /// ARM64 Fuchsia
@@ -662,6 +663,7 @@ pub(crate) const AARCH64_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     tier: Tier::Two,
 };
 
+/// ARM64 QNX Neutrino 7.0 RTOS
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX700: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx700",
     target_arch: Arch::AArch64,
@@ -672,6 +674,7 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX700: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// ARM64 QNX Neutrino 7.1 RTOS with default network stack (io-pkt)
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX710: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx710",
     target_arch: Arch::AArch64,
@@ -682,6 +685,7 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX710: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// ARM64 QNX Neutrino 7.1 RTOS with new network stack (io-sock)
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX710_IOSOCK: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx710_iosock",
     target_arch: Arch::AArch64,
@@ -692,6 +696,7 @@ pub(crate) const AARCH64_UNKNOWN_NTO_QNX710_IOSOCK: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// ARM64 QNX Neutrino 8.0 RTOS
 pub(crate) const AARCH64_UNKNOWN_NTO_QNX800: Platform = Platform {
     target_triple: "aarch64-unknown-nto-qnx800",
     target_arch: Arch::AArch64,
@@ -735,6 +740,7 @@ pub(crate) const AARCH64_UNKNOWN_REDOX: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// ARM64 TEEOS
 pub(crate) const AARCH64_UNKNOWN_TEEOS: Platform = Platform {
     target_triple: "aarch64-unknown-teeos",
     target_arch: Arch::AArch64,
@@ -875,7 +881,7 @@ pub(crate) const AARCH64V8R_UNKNOWN_NONE_SOFTFLOAT: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// `-Ctarget-cpu=gfx...` to specify [the AMD GPU] to compile for
+/// `-Ctarget-cpu=gfx...` to specify [the AMD GPU](https://llvm.org/docs/AMDGPUUsage.html#processors) to compile for
 pub(crate) const AMDGCN_AMD_AMDHSA: Platform = Platform {
     target_triple: "amdgcn-amd-amdhsa",
     target_arch: Arch::Amdgpu,
@@ -1688,7 +1694,7 @@ pub(crate) const HEXAGON_UNKNOWN_QURT: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit x86 iOS (Penryn) [^x86_32-floats-return-ABI]
+/// 32-bit x86 iOS (Penryn)
 pub(crate) const I386_APPLE_IOS: Platform = Platform {
     target_triple: "i386-apple-ios",
     target_arch: Arch::X86,
@@ -1699,7 +1705,7 @@ pub(crate) const I386_APPLE_IOS: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit Linux (kernel 3.2+, glibc 2.17, original Pentium) [^x86_32-floats-x87]
+/// 32-bit Linux (kernel 3.2+, glibc 2.17, original Pentium)
 pub(crate) const I586_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "i586-unknown-linux-gnu",
     target_arch: Arch::X86,
@@ -1710,7 +1716,7 @@ pub(crate) const I586_UNKNOWN_LINUX_GNU: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit Linux (musl 1.2.5, original Pentium) [^x86_32-floats-x87]
+/// 32-bit Linux (musl 1.2.5, original Pentium)
 pub(crate) const I586_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "i586-unknown-linux-musl",
     target_arch: Arch::X86,
@@ -1721,7 +1727,7 @@ pub(crate) const I586_UNKNOWN_LINUX_MUSL: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit x86 (original Pentium) [^x86_32-floats-x87]
+/// 32-bit x86 (original Pentium)
 pub(crate) const I586_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "i586-unknown-netbsd",
     target_arch: Arch::X86,
@@ -1732,7 +1738,7 @@ pub(crate) const I586_UNKNOWN_NETBSD: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit x86 Redox OS (PentiumPro) [^x86_32-floats-x87]
+/// 32-bit x86 Redox OS (PentiumPro)
 pub(crate) const I586_UNKNOWN_REDOX: Platform = Platform {
     target_triple: "i586-unknown-redox",
     target_arch: Arch::X86,
@@ -1743,7 +1749,7 @@ pub(crate) const I586_UNKNOWN_REDOX: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit macOS (10.12+, Sierra+, Penryn) [^x86_32-floats-return-ABI]
+/// 32-bit macOS (10.12+, Sierra+, Penryn)
 pub(crate) const I686_APPLE_DARWIN: Platform = Platform {
     target_triple: "i686-apple-darwin",
     target_arch: Arch::X86,
@@ -1754,7 +1760,7 @@ pub(crate) const I686_APPLE_DARWIN: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit x86 Android ([Pentium 4 plus various extensions](https://developer.android.com/ndk/guides/abis.html#x86)) [^x86_32-floats-return-ABI]
+/// 32-bit x86 Android ([Pentium 4 plus various extensions](https://developer.android.com/ndk/guides/abis.html#x86))
 pub(crate) const I686_LINUX_ANDROID: Platform = Platform {
     target_triple: "i686-linux-android",
     target_arch: Arch::X86,
@@ -1765,7 +1771,7 @@ pub(crate) const I686_LINUX_ANDROID: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit x86 QNX Neutrino 7.0 RTOS (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit x86 QNX Neutrino 7.0 RTOS (Pentium 4)
 pub(crate) const I686_PC_NTO_QNX700: Platform = Platform {
     target_triple: "i686-pc-nto-qnx700",
     target_arch: Arch::X86,
@@ -1776,7 +1782,7 @@ pub(crate) const I686_PC_NTO_QNX700: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit MinGW (Windows 10+, Windows Server 2016+, Pentium 4) [^x86_32-floats-return-ABI] [^win32-msvc-alignment]
+/// 32-bit MinGW (Windows 10+, Windows Server 2016+, Pentium 4)
 pub(crate) const I686_PC_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-pc-windows-gnu",
     target_arch: Arch::X86,
@@ -1787,7 +1793,7 @@ pub(crate) const I686_PC_WINDOWS_GNU: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit x86 MinGW (Windows 10+, Pentium 4), LLVM ABI [^x86_32-floats-return-ABI]
+/// 32-bit x86 MinGW (Windows 10+, Pentium 4), LLVM ABI
 pub(crate) const I686_PC_WINDOWS_GNULLVM: Platform = Platform {
     target_triple: "i686-pc-windows-gnullvm",
     target_arch: Arch::X86,
@@ -1798,7 +1804,7 @@ pub(crate) const I686_PC_WINDOWS_GNULLVM: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit MSVC (Windows 10+, Windows Server 2016+, Pentium 4) [^x86_32-floats-return-ABI] [^win32-msvc-alignment]
+/// 32-bit MSVC (Windows 10+, Windows Server 2016+, Pentium 4)
 pub(crate) const I686_PC_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-pc-windows-msvc",
     target_arch: Arch::X86,
@@ -1809,7 +1815,7 @@ pub(crate) const I686_PC_WINDOWS_MSVC: Platform = Platform {
     tier: Tier::One,
 };
 
-/// 32-bit x86 FreeBSD (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit x86 FreeBSD (Pentium 4)
 pub(crate) const I686_UNKNOWN_FREEBSD: Platform = Platform {
     target_triple: "i686-unknown-freebsd",
     target_arch: Arch::X86,
@@ -1820,7 +1826,7 @@ pub(crate) const I686_UNKNOWN_FREEBSD: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// 32-bit Haiku (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit Haiku (Pentium 4)
 pub(crate) const I686_UNKNOWN_HAIKU: Platform = Platform {
     target_triple: "i686-unknown-haiku",
     target_arch: Arch::X86,
@@ -1842,7 +1848,7 @@ pub(crate) const I686_UNKNOWN_HELENOS: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit GNU/Hurd (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit GNU/Hurd (Pentium 4)
 pub(crate) const I686_UNKNOWN_HURD_GNU: Platform = Platform {
     target_triple: "i686-unknown-hurd-gnu",
     target_arch: Arch::X86,
@@ -1853,7 +1859,7 @@ pub(crate) const I686_UNKNOWN_HURD_GNU: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit Linux (kernel 3.2+, glibc 2.17+, Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit Linux (kernel 3.2+, glibc 2.17+, Pentium 4)
 pub(crate) const I686_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_triple: "i686-unknown-linux-gnu",
     target_arch: Arch::X86,
@@ -1864,7 +1870,7 @@ pub(crate) const I686_UNKNOWN_LINUX_GNU: Platform = Platform {
     tier: Tier::One,
 };
 
-/// 32-bit Linux with musl 1.2.5 (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit Linux with musl 1.2.5 (Pentium 4)
 pub(crate) const I686_UNKNOWN_LINUX_MUSL: Platform = Platform {
     target_triple: "i686-unknown-linux-musl",
     target_arch: Arch::X86,
@@ -1875,7 +1881,7 @@ pub(crate) const I686_UNKNOWN_LINUX_MUSL: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// NetBSD/i386 (Pentium 4) [^x86_32-floats-return-ABI]
+/// NetBSD/i386 (Pentium 4)
 pub(crate) const I686_UNKNOWN_NETBSD: Platform = Platform {
     target_triple: "i686-unknown-netbsd",
     target_arch: Arch::X86,
@@ -1886,7 +1892,7 @@ pub(crate) const I686_UNKNOWN_NETBSD: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit OpenBSD (Pentium 4) [^x86_32-floats-return-ABI]
+/// 32-bit OpenBSD (Pentium 4)
 pub(crate) const I686_UNKNOWN_OPENBSD: Platform = Platform {
     target_triple: "i686-unknown-openbsd",
     target_arch: Arch::X86,
@@ -1897,7 +1903,7 @@ pub(crate) const I686_UNKNOWN_OPENBSD: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit UEFI (Pentium 4, softfloat) [^win32-msvc-alignment]
+/// 32-bit UEFI (Pentium 4, softfloat)
 pub(crate) const I686_UNKNOWN_UEFI: Platform = Platform {
     target_triple: "i686-unknown-uefi",
     target_arch: Arch::X86,
@@ -1908,7 +1914,6 @@ pub(crate) const I686_UNKNOWN_UEFI: Platform = Platform {
     tier: Tier::Two,
 };
 
-/// [^x86_32-floats-return-ABI]
 pub(crate) const I686_UWP_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-uwp-windows-gnu",
     target_arch: Arch::X86,
@@ -1919,7 +1924,6 @@ pub(crate) const I686_UWP_WINDOWS_GNU: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// [^x86_32-floats-return-ABI] [^win32-msvc-alignment]
 pub(crate) const I686_UWP_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-uwp-windows-msvc",
     target_arch: Arch::X86,
@@ -1930,7 +1934,7 @@ pub(crate) const I686_UWP_WINDOWS_MSVC: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit Windows 7 support [^x86_32-floats-return-ABI]
+/// 32-bit Windows 7 support
 pub(crate) const I686_WIN7_WINDOWS_GNU: Platform = Platform {
     target_triple: "i686-win7-windows-gnu",
     target_arch: Arch::X86,
@@ -1941,7 +1945,7 @@ pub(crate) const I686_WIN7_WINDOWS_GNU: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// 32-bit Windows 7 support [^x86_32-floats-return-ABI] [^win32-msvc-alignment]
+/// 32-bit Windows 7 support
 pub(crate) const I686_WIN7_WINDOWS_MSVC: Platform = Platform {
     target_triple: "i686-win7-windows-msvc",
     target_arch: Arch::X86,
@@ -1952,7 +1956,6 @@ pub(crate) const I686_WIN7_WINDOWS_MSVC: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// [^x86_32-floats-return-ABI]
 pub(crate) const I686_WRS_VXWORKS: Platform = Platform {
     target_triple: "i686-wrs-vxworks",
     target_arch: Arch::X86,
@@ -2304,7 +2307,7 @@ pub(crate) const MSP430_NONE_ELF: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// --emit=asm generates PTX code that [runs on NVIDIA GPUs]
+/// --emit=asm generates PTX code that [runs on NVIDIA GPUs](https://github.com/japaric-archived/nvptx#targets)
 pub(crate) const NVPTX64_NVIDIA_CUDA: Platform = Platform {
     target_triple: "nvptx64-nvidia-cuda",
     target_arch: Arch::Nvptx64,
@@ -2453,6 +2456,17 @@ pub(crate) const POWERPC64_UNKNOWN_LINUX_GNU: Platform = Platform {
     target_endian: Endian::Big,
     target_pointer_width: PointerWidth::U64,
     tier: Tier::Two,
+};
+
+/// PPC64 Linux (ELFv2 ABI, kernel 3.2, glibc 2.17)
+pub(crate) const POWERPC64_UNKNOWN_LINUX_GNUELFV2: Platform = Platform {
+    target_triple: "powerpc64-unknown-linux-gnuelfv2",
+    target_arch: Arch::PowerPc64,
+    target_os: OS::Linux,
+    target_env: Env::Gnu,
+    target_endian: Endian::Big,
+    target_pointer_width: PointerWidth::U64,
+    tier: Tier::Three,
 };
 
 /// PPC64 Linux (kernel 4.19+, musl 1.2.5)
@@ -3506,7 +3520,7 @@ pub(crate) const X86_64_APPLE_WATCHOS_SIM: Platform = Platform {
     tier: Tier::Three,
 };
 
-/// [Fortanix ABI] for 64-bit Intel SGX
+/// [Fortanix ABI](https://edp.fortanix.com/) for 64-bit Intel SGX
 pub(crate) const X86_64_FORTANIX_UNKNOWN_SGX: Platform = Platform {
     target_triple: "x86_64-fortanix-unknown-sgx",
     target_arch: Arch::X86_64,
@@ -3539,6 +3553,7 @@ pub(crate) const X86_64_LYNX_LYNXOS178: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// 64-bit x86 Cygwin
 pub(crate) const X86_64_PC_CYGWIN: Platform = Platform {
     target_triple: "x86_64-pc-cygwin",
     target_arch: Arch::X86_64,
@@ -3549,6 +3564,7 @@ pub(crate) const X86_64_PC_CYGWIN: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// x86 64-bit QNX Neutrino 7.1 RTOS with default network stack (io-pkt)
 pub(crate) const X86_64_PC_NTO_QNX710: Platform = Platform {
     target_triple: "x86_64-pc-nto-qnx710",
     target_arch: Arch::X86_64,
@@ -3559,6 +3575,7 @@ pub(crate) const X86_64_PC_NTO_QNX710: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// x86 64-bit QNX Neutrino 7.1 RTOS with new network stack (io-sock)
 pub(crate) const X86_64_PC_NTO_QNX710_IOSOCK: Platform = Platform {
     target_triple: "x86_64-pc-nto-qnx710_iosock",
     target_arch: Arch::X86_64,
@@ -3569,6 +3586,7 @@ pub(crate) const X86_64_PC_NTO_QNX710_IOSOCK: Platform = Platform {
     tier: Tier::Three,
 };
 
+/// x86 64-bit QNX Neutrino 8.0 RTOS
 pub(crate) const X86_64_PC_NTO_QNX800: Platform = Platform {
     target_triple: "x86_64-pc-nto-qnx800",
     target_arch: Arch::X86_64,
