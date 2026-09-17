@@ -45,7 +45,7 @@ pub struct OsvAdvisory {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvPackage {
+struct OsvPackage {
     /// Set to a constant identifying crates.io
     pub(crate) ecosystem: String,
     /// Crate name
@@ -57,7 +57,7 @@ pub struct OsvPackage {
 
 impl From<&cargo_lock::Name> for OsvPackage {
     fn from(package: &cargo_lock::Name) -> Self {
-        OsvPackage {
+        Self {
             ecosystem: ECOSYSTEM.to_string(),
             name: package.to_string(),
             purl: Some("pkg:cargo/".to_string() + package.as_str()),
@@ -68,7 +68,7 @@ impl From<&cargo_lock::Name> for OsvPackage {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[allow(non_camel_case_types)]
 #[serde(tag = "type", content = "score")]
-pub enum OsvSeverity {
+enum OsvSeverity {
     CVSS_V3(cvss::v3::Base),
     CVSS_V4(cvss::v4::Vector),
 }
@@ -78,16 +78,16 @@ impl TryFrom<Cvss> for OsvSeverity {
 
     fn try_from(cvss: Cvss) -> Result<Self, Self::Error> {
         match cvss {
-            Cvss::CvssV30(base) => Ok(OsvSeverity::CVSS_V3(base)),
-            Cvss::CvssV31(base) => Ok(OsvSeverity::CVSS_V3(base)),
-            Cvss::CvssV40(vector) => Ok(OsvSeverity::CVSS_V4(vector)),
+            Cvss::CvssV30(base) => Ok(Self::CVSS_V3(base)),
+            Cvss::CvssV31(base) => Ok(Self::CVSS_V3(base)),
+            Cvss::CvssV40(vector) => Ok(Self::CVSS_V4(vector)),
             _ => unreachable!(),
         }
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvAffected {
+struct OsvAffected {
     pub(crate) package: OsvPackage,
     ecosystem_specific: Option<OsvEcosystemSpecific>,
     database_specific: OsvDatabaseSpecific,
@@ -97,7 +97,7 @@ pub struct OsvAffected {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvJsonRange {
+struct OsvJsonRange {
     // 'type' is a reserved keyword in Rust
     #[serde(rename = "type")]
     kind: String,
@@ -134,7 +134,7 @@ impl OsvJsonRange {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum OsvTimelineEvent {
+enum OsvTimelineEvent {
     #[serde(rename = "introduced")]
     #[serde(deserialize_with = "deserialize_semver_compat")]
     Introduced(semver::Version),
@@ -160,7 +160,7 @@ where
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvReference {
+struct OsvReference {
     // 'type' is a reserved keyword in Rust
     #[serde(rename = "type")]
     pub kind: OsvReferenceKind,
@@ -169,7 +169,7 @@ pub struct OsvReference {
 
 impl From<Url> for OsvReference {
     fn from(url: Url) -> Self {
-        OsvReference {
+        Self {
             kind: guess_url_kind(&url),
             url,
         }
@@ -178,7 +178,7 @@ impl From<Url> for OsvReference {
 
 #[allow(clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum OsvReferenceKind {
+enum OsvReferenceKind {
     ADVISORY,
     #[allow(dead_code)]
     ARTICLE,
@@ -190,13 +190,13 @@ pub enum OsvReferenceKind {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvEcosystemSpecific {
+struct OsvEcosystemSpecific {
     affects: Option<OsvEcosystemSpecificAffected>,
     affected_functions: Option<Vec<FunctionPath>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvEcosystemSpecificAffected {
+struct OsvEcosystemSpecificAffected {
     arch: Vec<platforms::Arch>,
     os: Vec<platforms::Os>,
     /// We include function names only in order to allow changing
@@ -206,7 +206,7 @@ pub struct OsvEcosystemSpecificAffected {
 
 impl From<Affected> for OsvEcosystemSpecificAffected {
     fn from(a: Affected) -> Self {
-        OsvEcosystemSpecificAffected {
+        Self {
             arch: a.arch,
             os: a.os,
             functions: a.functions.into_keys().collect(),
@@ -215,7 +215,7 @@ impl From<Affected> for OsvEcosystemSpecificAffected {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OsvDatabaseSpecific {
+struct OsvDatabaseSpecific {
     #[serde(default)]
     categories: Vec<Category>,
     cvss: Option<Cvss>,
@@ -223,7 +223,7 @@ pub struct OsvDatabaseSpecific {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct MainOsvDatabaseSpecific {
+struct MainOsvDatabaseSpecific {
     #[serde(default)]
     license: Option<String>,
 }
@@ -266,7 +266,7 @@ impl OsvAdvisory {
         // other references
         reference_urls.extend(metadata.references);
 
-        OsvAdvisory {
+        Self {
             schema_version: None,
             id: metadata.id,
             modified: mod_times

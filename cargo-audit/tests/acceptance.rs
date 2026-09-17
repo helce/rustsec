@@ -4,7 +4,6 @@
 //! For more information, see:
 //! <https://docs.rs/abscissa_core/latest/abscissa_core/testing/index.html>
 
-#![deny(warnings, missing_docs, trivial_casts, unused_qualifications)]
 #![forbid(unsafe_code)]
 
 use abscissa_core::testing::prelude::*;
@@ -90,7 +89,7 @@ pub fn unaffected_newer_cmd_runner() -> CmdRunner {
 }
 
 /// Get the advisory JSON output from a `CmdRunner`
-pub fn get_advisories_json(process: &mut Process) -> serde_json::Value {
+pub fn get_advisories_json(process: &mut Process<'_>) -> serde_json::Value {
     let mut output = String::new();
     process.stdout().read_line(&mut output).unwrap();
     dbg!(&output);
@@ -339,7 +338,7 @@ fn unaffected_newer_suggests_upgrades() {
 
     let ids = HashSet::<&str>::from_iter(
         vulns
-            .into_iter()
+            .iter()
             .map(|v| v.pointer("/advisory/id").unwrap().as_str().unwrap()),
     );
 

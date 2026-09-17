@@ -9,7 +9,7 @@ use crate::{
     package::{self, Package},
 };
 
-pub use tame_index::external::reqwest::ClientBuilder;
+use tame_index::external::reqwest::ClientBuilder;
 use tame_index::utils::flock::{FileLock, LockOptions};
 
 enum Index {
@@ -101,7 +101,7 @@ impl CachedIndex {
             .build()
             .map_err(tame_index::Error::from)?;
 
-        Ok(CachedIndex {
+        Ok(Self {
             index: Index::SparseRemote(tame_index::index::AsyncRemoteSparseIndex::new(si, client)),
             cache: Default::default(),
             lock,
@@ -135,7 +135,7 @@ impl CachedIndex {
 
         let index = Index::SparseCached(si);
 
-        Ok(CachedIndex {
+        Ok(Self {
             index,
             cache: Default::default(),
             lock,
@@ -232,13 +232,13 @@ impl CachedIndex {
                     ErrorKind::NotFound,
                     format!(
                         "No such version in crates.io index: {} {}",
-                        &package.name, &package.version
+                        package.name, package.version
                     ),
                 )),
             },
             Ok(None) => Err(Error::new(
                 ErrorKind::NotFound,
-                format!("No such crate in crates.io index: {}", &package.name),
+                format!("No such crate in crates.io index: {}", package.name),
             )),
             Err(err) => Err(err.clone()),
         }

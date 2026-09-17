@@ -1,3 +1,5 @@
+//! Abstractions over different CVSS versions
+
 use alloc::boxed::Box;
 use alloc::str::FromStr;
 use core::fmt;
@@ -18,7 +20,7 @@ use {
 };
 
 /// Prefix used by all CVSS strings
-pub const PREFIX: &str = "CVSS";
+const PREFIX: &str = "CVSS";
 
 /// A CVSS vector
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -108,16 +110,18 @@ impl FromStr for Cvss {
 
     fn from_str(s: &str) -> Result<Self> {
         // Parse the prefix and select the right vector parser
-        let (id, _) = s.split_once('/').ok_or(Error::InvalidComponent {
+        let (id, _) = s.split_once('/').ok_or_else(|| Error::InvalidComponent {
             component: s.to_owned(),
         })?;
-        let (prefix, version) = id.split_once(':').ok_or(Error::InvalidComponent {
+        let (prefix, version) = id.split_once(':').ok_or_else(|| Error::InvalidComponent {
             component: id.to_owned(),
         })?;
         let (major_version, minor_version) =
-            version.split_once('.').ok_or(Error::InvalidComponent {
-                component: id.to_owned(),
-            })?;
+            version
+                .split_once('.')
+                .ok_or_else(|| Error::InvalidComponent {
+                    component: id.to_owned(),
+                })?;
 
         match (prefix, major_version, minor_version) {
             #[cfg(feature = "v3")]
@@ -153,8 +157,10 @@ impl fmt::Display for Cvss {
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum MetricType {
+    /// V3 metric type
     #[cfg(feature = "v3")]
     V3(v3::MetricType),
+    /// V4 metric type
     #[cfg(feature = "v4")]
     V4(v4::MetricType),
 }
