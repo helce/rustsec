@@ -1,12 +1,11 @@
 [package]
 name         = "cvss"
 description  = "Common Vulnerability Scoring System parser/serializer"
-version      = "2.2.0"
+version      = "3.0.0"
 license      = "Apache-2.0 OR MIT"
 repository   = "https://github.com/rustsec/rustsec"
-readme       = "README.md"
 categories   = ["parser-implementations"]
-keywords     = ["cvssv3", "cvssv4", "security", "advisory", "vulnerability"]
+keywords     = ["cvssv2", "cvssv3", "cvssv4", "security", "advisory", "vulnerability"]
 edition      = "2024"
 rust-version = "1.85"
 
@@ -14,7 +13,8 @@ rust-version = "1.85"
 serde = { workspace = true, optional = true }
 
 [features]
-default = ["std", "v3", "v4"]
+default = ["std", "v2", "v3", "v4"]
+v2 = []
 v3 = []
 v4 = []
 std = []

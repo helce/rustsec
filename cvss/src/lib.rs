@@ -10,32 +10,40 @@
 //! The [`Cvss`] type provides a unified interface for working with CVSS
 //! vectors.
 //!
-//! The [`v3::Base`] type provides the main functionality currently implemented
-//! for CVSS v3, namely: support for parsing, serializing, and scoring
-//! `CVSS:3.0` and `CVSS:3.1` Base Metric Group vector strings as described in
-//! the [CVSS v3.1 Specification].
+//! The [`v2::Vector`] type provides a fully-featured implementation of CVSS
+//! v2.0 — parsing, serializing, and scoring of the Base, Temporal, and
+//! Environmental groups as described in the [CVSS v2.0 Specification].
+//!
+//! The [`v3::Vector`] type provides the main functionality currently
+//! implemented for CVSS v3, namely: support for parsing, serializing, and
+//! scoring `CVSS:3.0` and `CVSS:3.1` Base, Temporal, and Environmental
+//! Metric Group vector strings as described in the
+//! [CVSS v3.1 Specification].
 //!
 //! The [`v4::Vector`] type provides a fully-featured implementation of CVSS
 //! v4.0, as described in the [CVSS v4.0 Specification].
 //!
 //! Serde support is available through the optional `serde` Cargo feature.
 //!
+//! [CVSS v2.0 Specification]: https://www.first.org/cvss/v2/guide
 //! [CVSS v3.1 Specification]: https://www.first.org/cvss/v3.1/specification-document
 //! [CVSS v4.0 Specification]: https://www.first.org/cvss/v4.0/specification-document
 
-// TODO(tarcieri): CVSS v2.0, CVSS v3.1 Temporal and Environmental Groups
+// TODO(tarcieri): CVSS v3.1 Temporal and Environmental Groups
 
 extern crate alloc;
 
 #[cfg(feature = "std")]
 extern crate std;
 
+#[cfg(feature = "v2")]
+pub mod v2;
 // A part of the v3 API is exposed even without the feature for compatibility.
 pub mod v3;
 #[cfg(feature = "v4")]
 pub mod v4;
 
-#[cfg(any(feature = "v3", feature = "v4"))]
+#[cfg(any(feature = "v2", feature = "v3", feature = "v4"))]
 pub mod cvss;
 mod error;
 mod severity;
@@ -43,7 +51,7 @@ mod severity;
 // For compatibility
 pub use crate::v3::metric::{Metric, MetricType};
 
-#[cfg(any(feature = "v3", feature = "v4"))]
+#[cfg(any(feature = "v2", feature = "v3", feature = "v4"))]
 pub use crate::cvss::Cvss;
 
 pub use crate::{

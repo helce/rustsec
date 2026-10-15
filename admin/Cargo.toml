@@ -5,7 +5,6 @@ version     = "0.8.10"
 license     = "Apache-2.0 OR MIT"
 homepage    = "https://rustsec.org"
 repository  = "https://github.com/rustsec/rustsec"
-readme      = "README.md"
 edition     = "2024"
 
 [features]
@@ -23,7 +22,6 @@ display-error-chain = { workspace = true }
 fs-err = { workspace = true }
 tame-index = { workspace = true, features = ["sparse"] }
 gix = { workspace = true, optional = true }
-rust-embed = { workspace = true }
 rustsec = { workspace = true, features = ["osv-export"] }
 serde = { workspace = true, features = ["serde_derive"] }
 serde_json = { workspace = true }

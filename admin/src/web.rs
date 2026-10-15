@@ -2,8 +2,7 @@
 
 use std::{
     collections::{HashMap, HashSet},
-    fs::{self, File},
-    iter,
+    io, iter,
     ops::Deref,
     path::{Path, PathBuf},
     str::FromStr,
@@ -17,7 +16,7 @@ use atom_syndication::{
 };
 use chrono::{Duration, NaiveDate, Utc};
 use comrak::markdown_to_html;
-use rust_embed::RustEmbed;
+use fs_err::{self as fs, File};
 use rustsec::advisory::{Category, Id};
 use rustsec::osv::OsvAdvisory;
 use rustsec::repository::git::GitModificationTimes;
@@ -146,7 +145,7 @@ pub fn render_advisories(output_folder: PathBuf) {
     }
 
     // Copy all the static assets.
-    copy_static_assets(&output_folder);
+    copy_static_assets(&output_folder).unwrap();
 
     // Render the index.html (/) page.
     let index_template = IndexTemplate;
@@ -546,22 +545,21 @@ fn render_feed(output_path: &Path, advisories: &[AdvisoryData]) {
     feed.write_to(file).unwrap();
 }
 
-#[derive(RustEmbed)]
-#[folder = "src/web/static/"]
-struct StaticAsset;
-
-fn copy_static_assets(output_folder: &Path) {
-    for file in StaticAsset::iter() {
-        let asset_path = PathBuf::from(file.as_ref());
-
-        // If the asset is in a folder, e.g. css/. Make the directory first.
-        if let Some(containing_folder) = asset_path.parent() {
-            fs::create_dir_all(output_folder.join(containing_folder)).unwrap();
+/// Copies all the static assets to the output folder
+///
+/// For production, we build the site in the advisory-db publish-web GitHub Actions workflow.
+/// Embed the static assets in the binary so we can just copy them into the output folder.
+fn copy_static_assets(output_folder: &Path) -> Result<(), io::Error> {
+    for (path, bytes) in STATIC_ASSETS {
+        let path = output_folder.join(path);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
         }
 
-        let asset = StaticAsset::get(file.as_ref()).unwrap();
-        fs::write(output_folder.join(file.as_ref()), asset.data).unwrap();
+        fs::write(&path, bytes)?;
     }
+
+    Ok(())
 }
 
 #[allow(unreachable_pub)] // Askama's macros get this wrong?
@@ -637,5 +635,128 @@ impl Deref for AdvisoryData {
 
     fn deref(&self) -> &Self::Target {
         &self.advisory
+    }
+}
+
+const STATIC_ASSETS: &[(&str, &[u8])] = &[
+    ("favicon.ico", include_bytes!("web/static/favicon.ico")),
+    (
+        "favicon-16x16.png",
+        include_bytes!("web/static/favicon-16x16.png"),
+    ),
+    (
+        "favicon-32x32.png",
+        include_bytes!("web/static/favicon-32x32.png"),
+    ),
+    ("css/basic.css", include_bytes!("web/static/css/basic.css")),
+    (
+        "css/highlight.css",
+        include_bytes!("web/static/css/highlight.css"),
+    ),
+    ("css/index.css", include_bytes!("web/static/css/index.css")),
+    ("js/search.js", include_bytes!("web/static/js/search.js")),
+    (
+        "img/debian-logo.svg",
+        include_bytes!("web/static/img/debian-logo.svg"),
+    ),
+    (
+        "img/external-link.svg",
+        include_bytes!("web/static/img/external-link.svg"),
+    ),
+    (
+        "img/github-logo-dark.svg",
+        include_bytes!("web/static/img/github-logo-dark.svg"),
+    ),
+    (
+        "img/github-logo-light.svg",
+        include_bytes!("web/static/img/github-logo-light.svg"),
+    ),
+    (
+        "img/osv-logo-dark.svg",
+        include_bytes!("web/static/img/osv-logo-dark.svg"),
+    ),
+    (
+        "img/osv-logo-light.svg",
+        include_bytes!("web/static/img/osv-logo-light.svg"),
+    ),
+    (
+        "img/rustsec-logo-dark.svg",
+        include_bytes!("web/static/img/rustsec-logo-dark.svg"),
+    ),
+    (
+        "img/rustsec-logo-light.svg",
+        include_bytes!("web/static/img/rustsec-logo-light.svg"),
+    ),
+    (
+        "img/rustsec-logo-square.svg",
+        include_bytes!("web/static/img/rustsec-logo-square.svg"),
+    ),
+];
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use std::io;
+    use std::path::{Path, PathBuf};
+
+    use super::STATIC_ASSETS;
+
+    #[test]
+    fn static_assets() {
+        let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/web/static");
+        let seen = check_dir(&root, None).unwrap();
+        assert_eq!(STATIC_ASSETS.len(), seen, "not all static assets were seen");
+    }
+
+    fn check_dir(dir: &Path, sub: Option<&Path>) -> Result<usize, io::Error> {
+        println!(
+            "\n\nChecking static assets in {} (sub {:?})",
+            dir.display(),
+            sub
+        );
+        let mut seen = 0;
+        for entry in fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            if entry.file_type()?.is_dir() {
+                let inner = dir.join(&path);
+                let Some(file_name) = path.file_name() else {
+                    continue;
+                };
+
+                let sub = Some(match sub {
+                    Some(sub) => sub.join(file_name),
+                    None => PathBuf::from(file_name),
+                });
+                seen += check_dir(&inner, sub.as_deref())?;
+                continue;
+            }
+
+            println!("Checking static asset: {}", path.display());
+            let Some(file_name) = path.file_name() else {
+                continue;
+            };
+
+            let rel_path = match sub {
+                Some(sub) => sub.join(file_name),
+                None => PathBuf::from(file_name),
+            };
+
+            let Some(rel_path_str) = rel_path.to_str() else {
+                continue;
+            };
+
+            println!("Relative path: {rel_path_str}");
+            let Some((_, expected_bytes)) = STATIC_ASSETS.iter().find(|(p, _)| *p == rel_path_str)
+            else {
+                panic!("static asset missing from STATIC_ASSETS: {rel_path_str}");
+            };
+
+            let actual_bytes = fs::read(&path)?;
+            assert_eq!(&actual_bytes, expected_bytes);
+            seen += 1;
+        }
+
+        Ok(seen)
     }
 }

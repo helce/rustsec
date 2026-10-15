@@ -4,11 +4,10 @@ description = """
 Rust platform registry with information about valid Rust platforms (target
 triple, target_arch, target_os) sourced from the Rust compiler.
 """
-version    = "4.1.0"
+version    = "4.2.0"
 license    = "Apache-2.0 OR MIT"
 homepage   = "https://rustsec.org"
 repository = "https://github.com/rustsec/rustsec"
-readme     = "README.md"
 categories = ["development-tools", "no-std"]
 keywords   = ["architectures", "cpu", "os", "targets", "triples"]
 edition    = "2018"

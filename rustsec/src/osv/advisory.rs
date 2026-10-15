@@ -11,7 +11,7 @@ use crate::{
     repository::git::{GitModificationTimes, GitPath},
 };
 use cvss::Cvss;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use url::Url;
 
@@ -69,7 +69,8 @@ impl From<&cargo_lock::Name> for OsvPackage {
 #[allow(non_camel_case_types)]
 #[serde(tag = "type", content = "score")]
 enum OsvSeverity {
-    CVSS_V3(cvss::v3::Base),
+    CVSS_V2(cvss::v2::Vector),
+    CVSS_V3(cvss::v3::Vector),
     CVSS_V4(cvss::v4::Vector),
 }
 
@@ -78,6 +79,7 @@ impl TryFrom<Cvss> for OsvSeverity {
 
     fn try_from(cvss: Cvss) -> Result<Self, Self::Error> {
         match cvss {
+            Cvss::CvssV20(vector) => Ok(Self::CVSS_V2(vector)),
             Cvss::CvssV30(base) => Ok(Self::CVSS_V3(base)),
             Cvss::CvssV31(base) => Ok(Self::CVSS_V3(base)),
             Cvss::CvssV40(vector) => Ok(Self::CVSS_V4(vector)),
@@ -114,14 +116,12 @@ impl OsvJsonRange {
         let mut timeline = Vec::new();
         for range in ranges {
             match range.introduced {
-                Some(ver) => timeline.push(OsvTimelineEvent::Introduced(ver)),
-                None => timeline.push(OsvTimelineEvent::Introduced(
-                    semver::Version::parse("0.0.0-0").unwrap(),
-                )),
+                Some(ver) => timeline.push(OsvTimelineEvent::Introduced(ver.to_string())),
+                None => timeline.push(OsvTimelineEvent::Introduced("0.0.0-0".to_owned())),
             }
             #[allow(clippy::single_match)]
             match range.fixed {
-                Some(ver) => timeline.push(OsvTimelineEvent::Fixed(ver)),
+                Some(ver) => timeline.push(OsvTimelineEvent::Fixed(ver.to_string())),
                 None => (), // "everything after 'introduced' is affected" is implicit in OSV
             }
         }
@@ -136,27 +136,11 @@ impl OsvJsonRange {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 enum OsvTimelineEvent {
     #[serde(rename = "introduced")]
-    #[serde(deserialize_with = "deserialize_semver_compat")]
-    Introduced(semver::Version),
+    Introduced(String),
     #[serde(rename = "fixed")]
-    #[serde(deserialize_with = "deserialize_semver_compat")]
-    Fixed(semver::Version),
+    Fixed(String),
     #[serde(rename = "last_affected")]
-    #[serde(deserialize_with = "deserialize_semver_compat")]
-    LastAffected(semver::Version),
-}
-
-fn deserialize_semver_compat<'de, D>(deserializer: D) -> Result<semver::Version, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let mut ver = String::deserialize(deserializer)?;
-    match ver.matches('.').count() {
-        0 => ver.push_str(".0.0"),
-        1 => ver.push_str(".0"),
-        _ => (),
-    }
-    semver::Version::from_str(&ver).map_err(serde::de::Error::custom)
+    LastAffected(String),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -197,8 +181,8 @@ struct OsvEcosystemSpecific {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct OsvEcosystemSpecificAffected {
-    arch: Vec<platforms::Arch>,
-    os: Vec<platforms::Os>,
+    arch: Vec<String>,
+    os: Vec<String>,
     /// We include function names only in order to allow changing
     /// the way versions are specified without an API break
     functions: Vec<FunctionPath>,
@@ -325,18 +309,18 @@ impl OsvAdvisory {
     }
 
     /// Get crates in crates.io ecosystem referenced in this advisory
-    pub fn crates(&self) -> Vec<String> {
-        let mut res: Vec<String> = self
+    pub fn crates(&self) -> Vec<&str> {
+        let mut res = self
             .affected
             .iter()
             .filter_map(|a| {
                 if a.package.ecosystem == ECOSYSTEM {
-                    Some(a.package.name.clone())
+                    Some(a.package.name.as_str())
                 } else {
                     None
                 }
             })
-            .collect();
+            .collect::<Vec<_>>();
         res.sort();
         res.dedup();
         res
@@ -362,7 +346,7 @@ fn guess_url_kind(url: &Url) -> OsvReferenceKind {
     if (str.contains("://github.com/") || str.contains("://gitlab.")) && str.contains("/issues/") {
         OsvReferenceKind::REPORT
     // the check for "/advisories/" matches both RustSec and GHSA URLs
-    } else if str.contains("/advisories/") || str.contains("://cve.mitre.org/") {
+    } else if str.contains("/advisories/") || str.contains("://www.cve.org/") {
         OsvReferenceKind::ADVISORY
     } else if str.contains("://crates.io/crates/") {
         OsvReferenceKind::PACKAGE

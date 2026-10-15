@@ -7,6 +7,8 @@ use core::fmt;
 #[cfg(feature = "std")]
 use crate::Severity;
 use crate::error::{Error, Result};
+#[cfg(feature = "v2")]
+use crate::v2;
 #[cfg(feature = "v3")]
 use crate::v3;
 #[cfg(feature = "v4")]
@@ -26,12 +28,15 @@ const PREFIX: &str = "CVSS";
 #[derive(Clone, PartialEq, Eq, Debug)]
 #[non_exhaustive]
 pub enum Cvss {
+    #[cfg(feature = "v2")]
+    /// A CVSS 2.0 base vector
+    CvssV20(v2::Vector),
     #[cfg(feature = "v3")]
     /// A CVSS 3.0 base vector
-    CvssV30(v3::Base),
+    CvssV30(v3::Vector),
     #[cfg(feature = "v3")]
     /// A CVSS 3.1 base vector
-    CvssV31(v3::Base),
+    CvssV31(v3::Vector),
     #[cfg(feature = "v4")]
     /// A CVSS 4.0 vector
     CvssV40(v4::Vector),
@@ -45,10 +50,12 @@ impl Cvss {
     #[cfg(feature = "std")]
     pub fn score(&self) -> f64 {
         match self {
+            #[cfg(feature = "v2")]
+            Self::CvssV20(base) => base.score().value(),
             #[cfg(feature = "v3")]
-            Self::CvssV30(base) => base.score().value(),
+            Self::CvssV30(vector) => vector.score().value(),
             #[cfg(feature = "v3")]
-            Self::CvssV31(base) => base.score().value(),
+            Self::CvssV31(vector) => vector.score().value(),
             #[cfg(feature = "v4")]
             Self::CvssV40(vector) => vector.score().value(),
         }
@@ -58,10 +65,12 @@ impl Cvss {
     #[cfg(feature = "std")]
     pub fn severity(&self) -> Severity {
         match self {
+            #[cfg(feature = "v2")]
+            Self::CvssV20(base) => base.score().severity(),
             #[cfg(feature = "v3")]
-            Self::CvssV30(base) => base.score().severity(),
+            Self::CvssV30(vector) => vector.score().severity(),
             #[cfg(feature = "v3")]
-            Self::CvssV31(base) => base.score().severity(),
+            Self::CvssV31(vector) => vector.score().severity(),
             #[cfg(feature = "v4")]
             Self::CvssV40(vector) => vector.score().severity(),
         }
@@ -70,10 +79,16 @@ impl Cvss {
     /// Get an iterator over all defined metrics
     pub fn metrics(&self) -> Box<dyn Iterator<Item = (MetricType, &dyn fmt::Debug)> + '_> {
         match self {
+            #[cfg(feature = "v2")]
+            Self::CvssV20(base) => Box::new(base.metrics().map(|(m, v)| (MetricType::V2(m), v))),
             #[cfg(feature = "v3")]
-            Self::CvssV30(base) => Box::new(base.metrics().map(|(m, v)| (MetricType::V3(m), v))),
+            Self::CvssV30(vector) => {
+                Box::new(vector.metrics().map(|(m, v)| (MetricType::V3(m), v)))
+            }
             #[cfg(feature = "v3")]
-            Self::CvssV31(base) => Box::new(base.metrics().map(|(m, v)| (MetricType::V3(m), v))),
+            Self::CvssV31(vector) => {
+                Box::new(vector.metrics().map(|(m, v)| (MetricType::V3(m), v)))
+            }
             #[cfg(feature = "v4")]
             Self::CvssV40(vector) => {
                 Box::new(vector.metrics().map(|(m, v)| (MetricType::V4(m), v)))
@@ -116,18 +131,23 @@ impl FromStr for Cvss {
         let (prefix, version) = id.split_once(':').ok_or_else(|| Error::InvalidComponent {
             component: id.to_owned(),
         })?;
-        let (major_version, minor_version) =
-            version
-                .split_once('.')
-                .ok_or_else(|| Error::InvalidComponent {
-                    component: id.to_owned(),
-                })?;
+
+        let Some((major_version, minor_version)) = version.split_once('.') else {
+            // CVSS v2.0 vectors have no "CVSS:x.y/" prefix at all, so a
+            // missing dotted version is the signal to try v2 instead.
+            #[cfg(feature = "v2")]
+            return v2::Vector::from_str(s).map(Self::CvssV20);
+            #[cfg(not(feature = "v2"))]
+            return Err(Error::InvalidComponent {
+                component: id.to_owned(),
+            });
+        };
 
         match (prefix, major_version, minor_version) {
             #[cfg(feature = "v3")]
-            (PREFIX, "3", "0") => v3::Base::from_str(s).map(Self::CvssV30),
+            (PREFIX, "3", "0") => v3::Vector::from_str(s).map(Self::CvssV30),
             #[cfg(feature = "v3")]
-            (PREFIX, "3", "1") => v3::Base::from_str(s).map(Self::CvssV31),
+            (PREFIX, "3", "1") => v3::Vector::from_str(s).map(Self::CvssV31),
             #[cfg(feature = "v4")]
             (PREFIX, "4", "0") => v4::Vector::from_str(s).map(Self::CvssV40),
             (PREFIX, _, _) => Err(Error::UnsupportedVersion {
@@ -143,10 +163,12 @@ impl FromStr for Cvss {
 impl fmt::Display for Cvss {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            #[cfg(feature = "v2")]
+            Self::CvssV20(base) => write!(f, "{}", base),
             #[cfg(feature = "v3")]
-            Self::CvssV30(base) => write!(f, "{}", base),
+            Self::CvssV30(vector) => write!(f, "{}", vector),
             #[cfg(feature = "v3")]
-            Self::CvssV31(base) => write!(f, "{}", base),
+            Self::CvssV31(vector) => write!(f, "{}", vector),
             #[cfg(feature = "v4")]
             Self::CvssV40(vector) => write!(f, "{}", vector),
         }
@@ -157,6 +179,9 @@ impl fmt::Display for Cvss {
 #[non_exhaustive]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum MetricType {
+    /// V2 metric type
+    #[cfg(feature = "v2")]
+    V2(v2::MetricType),
     /// V3 metric type
     #[cfg(feature = "v3")]
     V3(v3::MetricType),
@@ -169,6 +194,8 @@ impl MetricType {
     /// Get the name of this metric (i.e. acronym)
     pub fn name(self) -> &'static str {
         match self {
+            #[cfg(feature = "v2")]
+            Self::V2(m) => m.name(),
             #[cfg(feature = "v3")]
             Self::V3(m) => m.name(),
             #[cfg(feature = "v4")]
@@ -179,6 +206,8 @@ impl MetricType {
     /// Get a description of this metric.
     pub fn description(self) -> &'static str {
         match self {
+            #[cfg(feature = "v2")]
+            Self::V2(m) => m.description(),
             #[cfg(feature = "v3")]
             Self::V3(m) => m.description(),
             #[cfg(feature = "v4")]

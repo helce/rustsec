@@ -26,14 +26,28 @@ impl Score {
     /// <https://www.first.org/cvss/specification-document#t25>
     #[cfg(feature = "std")]
     pub fn roundup(self) -> Self {
-        let score_int = (self.0 * 100_000.0) as u64;
+        // Default behavior is CVSS v3.1 rounding
+        self.roundup_for_version(1)
+    }
 
-        if score_int % 10000 == 0 {
-            Self((score_int as f64) / 100_000.0)
-        } else {
-            let score_floor = ((score_int as f64) / 10_000.0).floor();
-            Self((score_floor + 1.0) / 10.0)
+    /// Round according to the CVSS v3.0 / v3.1 specification depending on
+    /// the minor version. `minor_version == 0` corresponds to 3.0, and
+    /// `minor_version == 1` corresponds to 3.1.
+    #[cfg(feature = "std")]
+    pub fn roundup_for_version(self, minor_version: usize) -> Self {
+        if minor_version == 0 {
+            // CVSS v3.0: round up to nearest tenth
+            return Self((self.0 * 10.0).ceil() / 10.0);
         }
+
+        // CVSS v3.1 rounding algorithm (Appendix A)
+        let score_int = (self.0 * 100_000.0) as u64;
+        if score_int % 10000 == 0 {
+            return Self((score_int as f64) / 100_000.0);
+        }
+
+        let score_floor = ((score_int as f64) / 10_000.0).floor();
+        Self((score_floor + 1.0) / 10.0)
     }
 
     /// Convert the numeric score into a `Severity`
@@ -67,5 +81,30 @@ impl From<Score> for f64 {
 impl From<Score> for Severity {
     fn from(score: Score) -> Self {
         score.severity()
+    }
+}
+
+#[cfg(all(feature = "std", test))]
+mod tests {
+    use super::Score;
+    use crate::severity::Severity;
+
+    #[test]
+    fn roundup_exact_tenth_unchanged() {
+        assert_eq!(Score::new(4.0).roundup().value(), 4.0);
+    }
+
+    #[test]
+    fn roundup_rounds_up() {
+        assert_eq!(Score::new(4.01).roundup().value(), 4.1);
+    }
+
+    #[test]
+    fn severity_boundaries() {
+        assert_eq!(Score::new(0.0).severity(), Severity::None);
+        assert_eq!(Score::new(0.1).severity(), Severity::Low);
+        assert_eq!(Score::new(4.0).severity(), Severity::Medium);
+        assert_eq!(Score::new(7.0).severity(), Severity::High);
+        assert_eq!(Score::new(9.0).severity(), Severity::Critical);
     }
 }
